@@ -91,7 +91,10 @@ codeDark () {
         echo
         cp $settings_dark $settings_json && success "codeDark enabled"
     fi
+}
 
+function giphy() { 
+    curl --silent "https://api.giphy.com/v1/gifs/search?api_key=Co5g2PO3ezzv3UCpUkLl1yKAARtAGBMe&limit=1&offset=0&rating=&lang=en&q=$1" | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin')).data[0].images.downsized_large.url" | pbcopy | open -a Slack
 }
 
 #---- End of Functions ----

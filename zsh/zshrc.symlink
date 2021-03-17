@@ -189,6 +189,8 @@ export PATH=$PATH:$MONGO_PATH/bin
 export PATH="/usr/local/bin/jdk8u212-b04/Contents/Home/bin:$PATH"
 export M2_HOME=/usr/local/Cellar/maven/3.6.1/libexec/
 export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git --exclude .vim'
+export GIPHY_AE_API_KEY=Co5g2PO3ezzv3UCpUkLl1yKAARtAGBMe
+
 
 #---- End Export ----
 
@@ -238,3 +240,4 @@ export PATH="/usr/local/opt/python/libexec/bin:$PATH:/Applications/Visual Studio
 if [ -d "$HOME/Library/Python/3.8/bin/" ] ; then
     PATH="$HOME/Library/Python/3.8/bin/:$PATH"
 fi
+export PATH="/usr/local/opt/qt/bin:$PATH"

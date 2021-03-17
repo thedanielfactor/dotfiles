@@ -38334,6 +38334,8 @@
 	</array>
 	<key>OpenBookmark</key>
 	<false/>
+	<key>OpenTmuxDashboardIfHiddenWindows</key>
+	<true/>
 	<key>PointerActions</key>
 	<dict>
 		<key>Button,1,1,,</key>
