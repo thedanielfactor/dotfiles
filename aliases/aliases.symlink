@@ -59,7 +59,7 @@ alias t="time"
 alias trash="rmtrash"
 alias del="rmtrash"
 alias rm="echo Use 'del', or the full path i.e. '/bin/rm'"
-alias ll="ls -la"
+# alias ll="ls -la"
 alias l.="ls -d .* --color=auto"
 alias cd..="cd .."
 alias ..="cd .."
@@ -74,3 +74,7 @@ alias vtd="npm run typegen && ~/development/auctionedge/cloud_integrations/spark
 alias cappsync="cd /Users/raymonddoran/development/auctionedge/cloud_integrations/spark_api/spark-api-appsync"
 alias cspark="cd /Users/raymonddoran/development/auctionedge/edge-spark-react"
 alias st=speedtest
+alias wsh="webstorm ."
+alias icd=~/Library/Mobile Documents/com~apple~CloudDocs/
+alias cdmb="cd ~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/MyBrain"
+

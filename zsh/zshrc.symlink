@@ -1,6 +1,13 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
 # if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
 #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 # fi
@@ -118,7 +125,7 @@ DEFAULT_USER="$(whoami)"
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-plugins=(sudo git brew npm history tmux tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z hacker-quotes zsh-aws-vault)
+plugins=(sudo git brew npm history tmux tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z hacker-quotes) # zsh-aws-vault)
 
 # User configuration
 
@@ -190,7 +197,19 @@ export PATH="/usr/local/bin/jdk8u212-b04/Contents/Home/bin:$PATH"
 export M2_HOME=/usr/local/Cellar/maven/3.6.1/libexec/
 export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git --exclude .vim'
 export GIPHY_AE_API_KEY=Co5g2PO3ezzv3UCpUkLl1yKAARtAGBMe
+export PATH="/usr/local/opt/libpq/bin:$PATH"
+export ODS_DEV="db-ods.dev.edgeapps.net"
+export ODS_STAGE="db-ods.stage.edgeapps.net"
+export ODS_PROD="db-ods2.prod.edgeapps.net"
+export PGPASSFILE='/Users/raymonddoran/.pgpass'
+export DO_NOT_TRACK=1
 
+#[pg-o-d]      PSQL To Dev ODS
+alias pg-o-d="psql -h${ODS_DEV} -Uusr_raymondd -dods_dev"
+#[pg-o-s]      PSQL To Stage ODS
+alias pg-o-s="psql -h${ODS_STAGE} -Uusr_raymondd -dods_stage"
+#[pg-o-p]      PSQL To Prod ODS
+alias pg-o-p="psql -h${ODS_PROD} -Uusr_raymondd -dods_prod"
 
 #---- End Export ----
 
@@ -228,16 +247,17 @@ eval "$(direnv hook zsh)"
 
 # AWS Vault 
 export AWS_VAULT_PASS_PREFIX=aws-vault
-export AWS_VAULT_BACKEND=pass
-# export AWS_VAULT_KEYCHAIN_NAME=login
+# export AWS_VAULT_BACKEND=pass
+export AWS_VAULT_KEYCHAIN_NAME=login
 export AWS_PROFILE=edge-prod
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/raymonddoran/.sdkman"
 [[ -s "/Users/raymonddoran/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/raymonddoran/.sdkman/bin/sdkman-init.sh"
 # Add Visual Studio Code (code)
-export PATH="/usr/local/opt/python/libexec/bin:$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+export PATH="/usr/local/opt:/usr/local/opt/python/libexec/bin:$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 if [ -d "$HOME/Library/Python/3.8/bin/" ] ; then
     PATH="$HOME/Library/Python/3.8/bin/:$PATH"
 fi
 export PATH="/usr/local/opt/qt/bin:$PATH"
+export MY_BRAIN="~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/MyBrain" 

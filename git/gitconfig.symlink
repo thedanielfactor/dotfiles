@@ -18,7 +18,7 @@
         ui = true
 [core]
         excludesfile = ~/.gitignore
-        editor = vim
+	editor = nvim
 [apply]
         whitespace = nowarn
 [mergetool]
@@ -36,3 +36,5 @@
 [user]
 	name = Raymond Doran
 	email = raymond@thedanielfactor.com
+[commit]
+	verbose = true

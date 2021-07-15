@@ -10,3 +10,9 @@ add-alias() {
   echo "alias $1=\"$2\"" >>${3:-$DEFAULT}
   source ~/.zshrc
 }
+
+log_prompt() {
+  echo $1
+  read
+  jrnl today: ${1}. $REPLY
+}
