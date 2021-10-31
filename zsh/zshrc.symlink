@@ -160,7 +160,7 @@ source $HOME/.aliases
 
 # autoload ----------------------------------------------------------------------
 autoload -Uz vcs_info 
-#autoload -Uz colors && colors
+autoload -Uz colors && colors
 autoload -U compinit && compinit
 
 # syntax highlighting
@@ -261,3 +261,5 @@ if [ -d "$HOME/Library/Python/3.8/bin/" ] ; then
 fi
 export PATH="/usr/local/opt/qt/bin:$PATH"
 export MY_BRAIN="~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/MyBrain" 
+
+eval $(thefuck --alias)

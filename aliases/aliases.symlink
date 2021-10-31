@@ -77,4 +77,4 @@ alias st=speedtest
 alias wsh="webstorm ."
 alias icd=~/Library/Mobile Documents/com~apple~CloudDocs/
 alias cdmb="cd ~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/MyBrain"
-
+alias wmip="curl -s http://checkip.dyndns.org/ | sed 's/[a-zA-Z<>/ :]//g'"
