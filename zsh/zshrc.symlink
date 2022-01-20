@@ -125,7 +125,7 @@ DEFAULT_USER="$(whoami)"
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-plugins=(sudo git brew npm history tmux tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z hacker-quotes) # zsh-aws-vault)
+plugins=(sudo git brew npm history tmux macos tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z hacker-quotes zsh-aws-vault)
 
 # User configuration
 
@@ -213,7 +213,10 @@ alias pg-o-p="psql -h${ODS_PROD} -Uusr_raymondd -dods_prod"
 
 #---- End Export ----
 
-cc() python3 -c "from math import *; print($*);"
+function cc {
+    python3 -c "from math import *; print($*);"
+}
+
 alias cc='noglob cc'
 
 #---- Source ----
