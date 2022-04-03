@@ -59,7 +59,7 @@ configureGitCompletion () {
 
 ohmyzshInstall () {
     # oh-my-zsh install
-    if [ -d ~/.oh-my-zsh/ ] ; then
+    if [ -e ~/.oh-my-zsh/oh-my-zsh.sh ] ; then
     info 'oh-my-zsh is already installed...'
     read -p "Would you like to update oh-my-zsh now? y/n " -n 1 -r
     echo ''
