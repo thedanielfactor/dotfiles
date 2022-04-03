@@ -1,5 +1,3 @@
-alias lc='colorls -la'
-alias ls="colorls --sd -A"
 alias zshconfig="code ~/.zshrc"
 alias ohmyzsh="code ~/.oh-my-zsh"
 alias config='/usr/bin/git --git-dir=/Users/$(whoami)/.cfg/ --work-tree=/Users/$(whoami)'
@@ -8,7 +6,16 @@ alias badwifi='k config use-context docker-desktop'
 alias jdk8s='k config use-context jdk8s-us'
 alias jdk8s3='k config use-context jdk8s3'
 alias js='~/bin/show-struct.py'
+# alias ctags="`brew --prefix`/bin/ctags`"
+# alias ctags >> ~/.zshrc
 #acs-engine
+
+# Terminal Replacements
+alias lc='colorls -la'
+alias ls='colorls --sd -A'
+alias cat='bat'
+alias manf='/usr/bin/man'
+alias man='tldr'
 
 # SUPER IMPORTANT ALIASES!!
 alias acse="/usr/local/bin/acs-engine"
@@ -67,7 +74,10 @@ alias ....="cd ../../.."
 alias ./="cd"
 alias tg="npm run typegen"
 alias t=time
-alias vd="./vault-deploy.sh raymondd && say done || say error"
+alias lg=lazygit
+alias vd="./vault-deploy.sh raymondd"
+alias vds="./vault-deploy.sh raymondd stage-appsync"
+alias vdp="./vault-deploy.sh raymondd prod-appsync"
 alias spark="npm run generate-graphql-types && npm start"
 alias vtd="npm run typegen && ~/development/auctionedge/cloud_integrations/spark_api/spark-api-appsync/vault-deploy.sh"
 alias cappsync="cd /Users/$USER/development/auctionedge/cloud_integrations/spark_api/spark-api-appsync"
@@ -77,4 +87,12 @@ alias wsh="webstorm ."
 alias icd=~/Library/Mobile Documents/com~apple~CloudDocs/
 alias cdmb="cd ~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/MyBrain"
 alias wmip="curl -s http://checkip.dyndns.org/ | sed 's/[a-zA-Z<>/ :]//g'"
-alias pgdev="psql -h db-ods.dev.edgeapps.net -U usr_raymondd -d ods_dev"
+alias pg-odsdev="psql -h db-ods.dev.edgeapps.net -U usr_raymondd -d ods_dev"
+alias icloud=~/Library/Mobile\ Documents/com~apple~CloudDocs/
+alias wttr="curl wttr.in"
+#[pg-od]      PSQL To Dev ODS
+alias pg-od="psql -h ${ODS_DEV} -U usr_raymondd -d ods_dev"
+#[pg-os]      PSQL To Stage ODS
+alias pg-os="psql -h ${ODS_STAGE} -U usr_raymondd -d ods_stage"
+#[pg-op]      PSQL To Prod ODS
+alias pg-op="psql -h ${ODS_PROD} -U usr_raymondd -d ods_prod"

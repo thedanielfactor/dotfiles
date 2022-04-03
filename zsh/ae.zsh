@@ -235,3 +235,14 @@ stock() {
   done
   echo "I hope you were satisified with this automation. \033[00;33mHave a wonderful day!\033[0m"
 }
+
+# Switch node-version when directory changes
+# https://github.com/creationix/nvm/issues/603#issuecomment-91290448
+# function chpwd() {
+# 	if [ -r $PWD/.node-version ]; then
+# 		nvm use `cat $PWD/.node-version`
+# 	elif [ -r $PWD/.nvmrc ]; then
+# 		nvm use
+# 	fi
+# }
+# chpwd

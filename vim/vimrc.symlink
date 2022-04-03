@@ -12,6 +12,10 @@ Plugin 'nightsense/seabird'
 Plugin 'tomasiser/vim-code-dark'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'pangloss/vim-javascript'
+Plugin 'pangloss/vim-typescript'
+Plugin 'mwx/vim-jsx'
+Plugin 'mxw/vim-tsx'
 call vundle#end()            " required
 
 filetype plugin indent on    " required
@@ -47,6 +51,9 @@ set backspace=indent,eol,start
 
 " Nerdtree Settings
 set mouse=a
+map <C-C><C-C> :q!
+map ww :w!
+map <C-W><C-W> :wq!
 autocmd VimEnter * NERDTree | wincmd p
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 map <C-n> :NERDTreeToggle<CR>
@@ -60,3 +67,4 @@ set ttyfast
 set lazyredraw
 map tt :NERDTreeToggle<CR> "double click t button to toggle NerdTree
 map [] :TagbarToggle<CR> "click [] to toggle Tagbar
+let g:ackprg = 'ag --nogroup --nocolor --column'

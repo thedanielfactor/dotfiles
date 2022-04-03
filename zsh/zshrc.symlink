@@ -1,3 +1,7 @@
+# Fig pre block. Keep at the top of this file.
+export PATH="${PATH}:${HOME}/.local/bin"
+eval "$(fig init zsh pre)"
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -125,7 +129,22 @@ DEFAULT_USER="$(whoami)"
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-plugins=(sudo git brew npm history tmux macos tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z hacker-quotes zsh-aws-vault)
+plugins=(sudo git brew npm history tmux macos tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z zsh-vi-mode hacker-quotes zsh-aws-vault alias-finder common-aliases docker docker-compose dotenv encode64 extract jira jsontools node urltools vscode web-search)
+
+# ZPlug
+# export ZPLUG_HOME=/usr/local/opt/zplug
+# source $ZPLUG_HOME/init.zsh
+# zplug "b4b4r07/enhancd", use:init.sh
+# zplug 'wfxr/forgit'
+
+# antigen
+# source "$HOME/.antigen/antigen.zsh"
+
+# antigen use oh-my-zsh
+# antigen bundle arialdomartini/oh-my-git
+# antigen theme arialdomartini/oh-my-git-themes oppa-lana-style
+
+# antigen apply
 
 # User configuration
 
@@ -140,6 +159,8 @@ plugins=(sudo git brew npm history tmux macos tmuxinator zsh-autosuggestions zsh
 # else
 #   export EDITOR='mvim'
 # fi
+
+export EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -188,8 +209,8 @@ export PATH=$PATH:/Users/raymonddoran/bin:~/Library/Python/2.7/bin:~/Library/Pyt
 export GOPATH=~/go 
 export PATH=$GOPATH/bin:$PATH
 export GOROOT=/usr/local/opt/go/libexec
-export PATH=$PATH:/usr/local/bin/node
-export PATH="/usr/local/opt/node@8/bin:$PATH"
+#export PATH=$PATH:/usr/local/bin/node
+#export PATH="/usr/local/opt/node@8/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 export MONGO_PATH=/usr/local/mongodb 
 export PATH=$PATH:$MONGO_PATH/bin
@@ -203,13 +224,7 @@ export ODS_STAGE="db-ods.stage.edgeapps.net"
 export ODS_PROD="db-ods2.prod.edgeapps.net"
 export PGPASSFILE='/Users/raymonddoran/.pgpass'
 export DO_NOT_TRACK=1
-
-#[pg-o-d]      PSQL To Dev ODS
-alias pg-o-d="psql -h${ODS_DEV} -Uusr_raymondd -dods_dev"
-#[pg-o-s]      PSQL To Stage ODS
-alias pg-o-s="psql -h${ODS_STAGE} -Uusr_raymondd -dods_stage"
-#[pg-o-p]      PSQL To Prod ODS
-alias pg-o-p="psql -h${ODS_PROD} -Uusr_raymondd -dods_prod"
+export GROOVY_HOME=/usr/local/opt/groovy/libexec
 
 #---- End Export ----
 
@@ -220,8 +235,8 @@ function cc {
 alias cc='noglob cc'
 
 #---- Source ----
-[ -f ~/bin/fubectl.source ] && source ~/bin/fubectl.source
-source <(kubectl completion zsh)
+# [ -f ~/bin/fubectl.source ] && source ~/bin/fubectl.source
+# source <(kubectl completion zsh)
 # source $(dirname $(gem which colorls))/tab_complete.sh
 #---- End Source ----
 #---- END CUSTOM ----
@@ -262,8 +277,36 @@ export PATH="/usr/local/opt:/usr/local/opt/python/libexec/bin:$PATH:/Application
 if [ -d "$HOME/Library/Python/3.8/bin/" ] ; then
     PATH="$HOME/Library/Python/3.8/bin/:$PATH"
 fi
-export PATH="/usr/local/opt/qt/bin:$PATH"
+# export PATH="/usr/local/opt/qt/bin:$PATH"
+export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:/Users/$DEFAULT_USER/.gem/ruby/3.1.0/bin:$PATH"
 export MY_BRAIN="~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/MyBrain" 
 
 eval $(thefuck --alias)
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export jiraserver="https://auctionedge.atlassian.net"
+export jirauser="raymondd@auctionedge.com"
+export jiratoken="C0Am8af13s30FibJQa1yF225"
+
+eval "$(ntfy shell-integration)"
+
+today=`date "+%m/%d"`
+grep $today /usr/share/calendar/calendar.music
+grep $today /usr/share/calendar/calendar.history
+grep $today /usr/share/calendar/calendar.computer
+grep $today /usr/share/calendar/calendar.birthday
+
+export SLACK_SIGNING_SECRET=65d59baf3f6f19d708161c73792cd08c
+export SLACK_BOT_TOKEN=xoxb-3142983592579-3145388200532-2xYAvegOYZOjqe6Vl2B9CGzm
+
+export JIRA_NAME=thedanielfactor
+export JIRA_PREFIX="SPARK-"
+export JIRA_RAPID_BOARD=true
+
+. $(brew --prefix asdf)/libexec/asdf.sh
+
+# source '$HOME/Development/forgit/forgit.plugin.zsh'
+
+# Fig post block. Keep at the bottom of this file.
+eval "$(fig init zsh post)"
+
