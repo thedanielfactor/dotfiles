@@ -91,8 +91,10 @@ alias pg-odsdev="psql -h db-ods.dev.edgeapps.net -U usr_raymondd -d ods_dev"
 alias icloud=~/Library/Mobile\ Documents/com~apple~CloudDocs/
 alias wttr="curl wttr.in"
 #[pg-od]      PSQL To Dev ODS
-alias pg-od="psql -h ${ODS_DEV} -U usr_raymondd -d ods_dev"
+alias pg-od="psql -h $ODS_DEV -U usr_raymondd -d ods_dev"
 #[pg-os]      PSQL To Stage ODS
 alias pg-os="psql -h ${ODS_STAGE} -U usr_raymondd -d ods_stage"
+alias pg-os="psql -h $ODS_STAGE -U usr_raymondd -d ods_stage"
 #[pg-op]      PSQL To Prod ODS
 alias pg-op="psql -h ${ODS_PROD} -U usr_raymondd -d ods_prod"
+alias pg-op="psql -h $ODS_PROD -U usr_raymondd -d ods_prod"
