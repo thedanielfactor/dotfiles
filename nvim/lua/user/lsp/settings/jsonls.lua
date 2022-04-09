@@ -1,4 +1,12 @@
-local default_schemas = nil
+local function read_json(file_path)
+    local file = io.open(file_path, "r")
+    local table = vim.fn.json_decode(file:read("a"))
+    file.close()
+
+    return table
+end
+
+local default_schemas = {}
 local status_ok, jsonls_settings = pcall(require, "nlspsettings.jsonls")
 if status_ok then
   default_schemas = jsonls_settings.get_default_schemas()

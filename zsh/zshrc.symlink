@@ -5,13 +5,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-# fi
-
 # Path to your oh-my-zsh installation oh-my-zsh specific setting
 export ZSH=~/.oh-my-zsh
 # export TERM=xterm-256color
@@ -27,31 +20,6 @@ zstyle ':bracketed-paste-magic' active-widgets '.self-*'
 # zsh tmux settings
 ZSH_TMUX_AUTOSTART='true'
 ZSH_TMUX_AUTOCONNECT='false' # do not autoconnect to existing tmux session, allows a new term new tmux session
-
-######################
-# all of our zsh files
-typeset -U config_files
-config_files=($HOME/.dotfiles/**/*.zsh)
-# load the path files
-for file in ${(M)config_files:#*/path.zsh}
-do
-  source $file
-done
-# load everything but the path and completion files
-for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
-do
-  source $file
-done
-# initialize autocomplete here, otherwise functions won't be loaded
-# autoload -U compinit
-# compinit
-# load every completion after autocomplete loads
-for file in ${(M)config_files:#*/completion.zsh}
-do
-  source $file
-done
-unset config_files
-######################
 
 # #Background Jobs Function
 # set_default POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE true
@@ -125,7 +93,7 @@ DEFAULT_USER="$(whoami)"
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-plugins=(sudo git brew npm history tmux macos tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z zsh-vi-mode hacker-quotes zsh-aws-vault alias-finder common-aliases docker docker-compose dotenv encode64 extract jira jsontools node urltools vscode web-search)
+plugins=(sudo git brew npm history tmux tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z zsh-vi-mode zsh-aws-vault alias-finder common-aliases docker docker-compose dotenv encode64 extract jira jsontools node urltools vscode web-search)
 
 # ZPlug
 # export ZPLUG_HOME=/usr/local/opt/zplug
@@ -179,6 +147,30 @@ source $HOME/.aliases
 autoload -Uz vcs_info 
 autoload -Uz colors && colors
 autoload -U compinit && compinit
+
+######################
+# all of our zsh files
+typeset -U config_files
+config_files=($HOME/.dotfiles/**/*.zsh)
+# load the path files
+for file in ${(M)config_files:#*/path.zsh}
+do
+  source $file
+done
+# load everything but the path and completion files
+for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
+do
+  source $file
+done
+#
+  
+# load every completion after autocomplete loads
+for file in ${(M)config_files:#*/completion.zsh}
+do
+  source $file
+done
+unset config_files
+######################
 
 # syntax highlighting
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
@@ -286,12 +278,12 @@ export jiratoken="C0Am8af13s30FibJQa1yF225"
 
 eval "$(ntfy shell-integration)"
 
-today=`date "+%m/%d"`
-grep $today /usr/share/calendar/calendar.music
-grep $today /usr/share/calendar/calendar.history
-grep $today /usr/share/calendar/calendar.computer
-grep $today /usr/share/calendar/calendar.birthday
-
+# today=`date "+%m/%d"`
+# grep $today /usr/share/calendar/calendar.music
+# grep $today /usr/share/calendar/calendar.history
+# grep $today /usr/share/calendar/calendar.computer
+# grep $today /usr/share/calendar/calendar.birthday
+#
 export SLACK_SIGNING_SECRET=65d59baf3f6f19d708161c73792cd08c
 export SLACK_BOT_TOKEN=xoxb-3142983592579-3145388200532-2xYAvegOYZOjqe6Vl2B9CGzm
 
@@ -299,6 +291,5 @@ export JIRA_NAME=thedanielfactor
 export JIRA_PREFIX="SPARK-"
 export JIRA_RAPID_BOARD=true
 
-. $(brew --prefix asdf)/libexec/asdf.sh
 
-# source '$HOME/Development/forgit/forgit.plugin.zsh'
+. /usr/local/opt/asdf/libexec/asdf.sh
