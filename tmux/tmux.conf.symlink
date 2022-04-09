@@ -28,6 +28,8 @@ set-option -g history-limit 30000
 # use vi style keybindings
 setw -g mode-keys vi
 
+set -g focus-events on
+
 # xterm-style function key sequences
 setw -g xterm-keys on
 
@@ -117,6 +119,3 @@ setw -g window-status-current-format ' #I#[fg=colour250]:#[fg=colour255]#W#[fg=c
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run '~/.tmux/plugins/tpm/tpm'
 
-# Fig Tmux Integration: Enabled
-source-file ~/.fig/tmux
-# End of Fig Tmux Integration
