@@ -3,7 +3,7 @@
 ### macOS Configuration
 Run the following to configure macOS from scratch...
 ```
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/jldeen/dotfiles/mac-dev/configure.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/thedanielfactor/dotfiles/mac-dev/configure.sh)"
 ```
 
 It should go without saying, you should never run a script on your system without reading it to understand what changes it will make to your system. My scripts and code samples are no exception to the rule.
@@ -35,8 +35,8 @@ symlinked without extension into `$HOME` when you run `script/bootstrap`.
 
 A lot of stuff. Seriously, a lot of stuff. Check them out in the file browser
 above and see what components may mesh up with you.
-[Fork holman's](https://github.com/holman/dotfiles/fork) or [Fork mine](htps://github.com/jldeen/dotfiles/fork), remove what you don't
-use, and build on what you do use.
+[Fork holman's](https://github.com/holman/dotfiles/fork), [Fork jdeen's](htps://github.com/jldeen/dotfiles/fork), or [Fork mine](https://github.com/thedanielfactor/dotfiles/fork) and remove what you don't use, 
+and build on what you do use.
 
 ## components
 
@@ -58,12 +58,12 @@ There's a few special files in the hierarchy.
   symlinked in when you run `script/bootstrap`.
 
 ## install
-There are two "master" branches here: WSL and MacOS; there are two "dev" branches here wsl-dev and mac-dev.
+In jldeen's original repo there are two "master" branches: WSL and MacOS; there are two "dev" branches here wsl-dev and mac-dev.  As I currently only use mac-os I am not keeping up the WSL and might eventually remove them from mine.  I am also considering movig to a Linux setup and will add a linux branch for things that will be different.  If you would like a WSL version please [fork jldee's](https://github.com/jldeen/dotfiles/fork) repository.
 
 Run this:
 
 ```sh
-git clone https://github.com/jldeen/dotfiles.git ~/.dotfiles
+git clone https://github.com/thedanielfactor/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 script/bootstrap
 ```
@@ -87,14 +87,15 @@ said, I do use this as *my* dotfiles, so there's a good chance I may break
 something if I forget to make a check for a dependency.
 
 If you're brand-new to the project and run into any blockers, please
-[open an issue](https://github.com/jldeen/dotfiles/issues) on this repository
+[open an issue](https://github.com/thedanielfactor/dotfiles/issues) on this repository
 and I'd love to get it fixed for you!
 
 ## thanks
 
-I forked [Ryan Bates](http://github.com/ryanb)' excellent
-[dotfiles](http://github.com/ryanb/dotfiles) for a couple years before the
-weight of my changes and tweaks inspired me to finally roll my own. But Ryan's
-dotfiles were an easy way to get into bash customization, and then to jump ship
-to zsh a bit later. A decent amount of the code in these dotfiles stem or are
-inspired from Ryan's original project.
+Thank you [jldeen](http://github.com/jldeen)' for putting your awesome 
+[dotfiles](http://github.com/jldeen/dotfiles) online and writing a great article
+about them which I am unable to locate online anymore.  I decided to update my own
+fork as I plan on adding Zim as well as of oh-my-zsh for others to compare.  Thank
+you [holman](https://github.com/holman) as well for inspiring jldeen.  Thanks also to
+[Ryan Bates](http://github.com/ryanb)' for your [contribution](https://github.com/jldeen/dotfiles#thanks)
+to this chain also.
