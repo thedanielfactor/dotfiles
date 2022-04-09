@@ -11,13 +11,13 @@ It should go without saying, you should never run a script on your system withou
 If you choose to use my dotfiles, my configure script will backup your current dotfiles, but will also make changes to your crontab - it's in your best interest to understand these changes prior to opting in.
 
 ### Notes
-Your dotfiles are how you personalize your system. These are mine.
+Your dotfiles are how you personalize your system. These are mine, albeit I 
+borrowed inspriation from jldeen, which borrowed from Holmes and Ryan bates.
 
-I was a little tired of having long alias files and everything strewn about
-(which is extremely common on other dotfiles projects, too). That led to this
-project being much more topic-centric. I realized I could split a lot of things
-up into the main areas I used (git, system libraries, and so on), so I
-structured the project accordingly. I also created branches for WSL and MacOS since those are my two environments.
+As jldeen said in her [README](https://github.com/jldeen/dotfiles/README.md), which 
+I have shamelessly just updated with my own thoughts, I was a little tired of 
+having long alias files and everything strewn about (which is extremely common 
+on other dotfiles projects, too). 
 
 If you're interested in the philosophy behind why projects like these are
 awesome, you might want to [read Holman's post on the
