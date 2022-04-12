@@ -246,3 +246,23 @@ stock() {
 # 	fi
 # }
 # chpwd
+#
+
+# AE PSQL
+#[pg-od]      PSQL To Dev ODS
+alias pg-od="psql -h $ODS_DEV -U usr_raymondd -d ods_dev"
+#[pg-os]      PSQL To Stage ODS
+alias pg-os="psql -h $ODS_STAGE -U usr_raymondd -d ods_stage"
+#[pg-op]      PSQL To Prod ODS
+alias pg-op="psql -h $ODS_PROD -U usr_raymondd -d ods_prod"
+
+# Aliases for AuctionEdge
+alias tg="npm run typegen"
+alias vd="./vault-deploy.sh raymondd"
+alias vds="./vault-deploy.sh raymondd stage-appsync"
+alias vdp="./vault-deploy.sh raymondd prod-appsync"
+alias spark="npm run generate-graphql-types && npm start"
+alias vtd="npm run typegen && ~/development/auctionedge/cloud_integrations/spark_api/spark-api-appsync/vault-deploy.sh"
+alias cappsync="cd /Users/$USER/development/auctionedge/cloud_integrations/spark_api/spark-api-appsync"
+alias cspark="cd /Users/$USER/development/auctionedge/edge-spark-react"
+

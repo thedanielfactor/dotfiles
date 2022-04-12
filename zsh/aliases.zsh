@@ -8,7 +8,7 @@ add-alias() {
   # you can specify a 3rd arg as new location in ~/.dotfiles if you so desire
   DEFAULT=$HOME/.dotfiles/aliases/aliases.symlink
   echo "alias $1=\"$2\"" >>${3:-$DEFAULT}
-  source ~/.zshrc
+  source $HOME/.dotfiles/aliases/aliases.zshrc
 }
 
 log_prompt() {

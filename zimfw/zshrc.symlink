@@ -1,0 +1,297 @@
+# Start configuration added by Zim install {{{
+
+# Default username to hide "user@hostname" info
+DEFAULT_USER="$(whoami)"
+
+export EDITOR='nvim'
+
+#
+# User configuration sourced by interactive shells
+#
+
+# autoload ----------------------------------------------------------------------
+autoload -Uz vcs_info 
+autoload -Uz colors && colors
+autoload -U compinit && compinit
+
+# -----------------
+# Zsh configuration
+# -----------------
+
+# History
+#
+
+# Remove older command from the history if a duplicate is to be added.
+setopt HIST_IGNORE_ALL_DUPS
+
+# ------------------
+# Input/output
+# ------------------
+
+# Set editor default keymap to emacs (`-e`) or vi (`-v`)
+bindkey -v
+
+# Prompt for spelling correction of commands.
+setopt CORRECT
+
+# Customize spelling correction prompt.
+#SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+
+# Remove path separator from WORDCHARS.
+WORDCHARS=${WORDCHARS//[\/]}
+
+# -----------------
+# Zim configuration
+# -----------------
+
+# Use degit instead of git as the default tool to install and update modules.
+#zstyle ':zim:zmodule' use 'degit'
+
+# --------------------
+# Module configuration
+# --------------------
+
+# -----------
+# git
+# -----------
+#
+# Set a custom prefix for the generated aliases. The default prefix is 'G'.
+#zstyle ':zim:git' aliases-prefix 'g'
+
+# -----------
+# input
+# -----------
+#
+# Append `../` to your input for each `.` you type after an initial `..`
+zstyle ':zim:input' double-dot-expand yes
+
+# -----------
+# termtitle
+# -----------
+
+# Set a custom terminal title format using prompt expansion escape sequences.
+# See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
+# If none is provided, the default '%n@%m: %~' is used.
+#zstyle ':zim:termtitle' format '%1~'
+
+# -----------
+# zsh-autosuggestions
+# -----------
+
+# Disable automatic widget re-binding on each precmd. This can be set when
+# zsh-users/zsh-autosuggestions is the last module in your ~/.zimrc.
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
+# Customize the style that the suggestions are shown with.
+# See https://github.com/zsh-users/zsh-autosuggestions/blob/master/README.md#suggestion-highlight-style
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
+
+# -----------
+# zsh-syntax-highlighting
+# -----------
+
+# Set what highlighters will be used.
+# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md
+# ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+
+# Customize the main highlighter styles.
+# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters/main.md#how-to-tweak-it
+# syntax highlighting
+typeset -A ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[default]=none
+
+ZSH_HIGHLIGHT_STYLES[comment]='fg=#ff00ff,bg=cyan,bold,underline'
+# ZSH_HIGHLIGHT_STYLES[function]=fg=magenta,bold
+ZSH_HIGHLIGHT_STYLES[command]=fg=green
+ZSH_HIGHLIGHT_STYLES[precommand]=fg=green
+ZSH_HIGHLIGHT_STYLES[alias]=fg=green
+ZSH_HIGHLIGHT_STYLES[builtin]=fg=green
+#path
+ZSH_HIGHLIGHT_STYLES[path]=fg=cyan,underline
+ZSH_HIGHLIGHT_STYLES[path_prefix]=fg=cyan
+ZSH_HIGHLIGHT_STYLES[path_approx]=fg=cyan
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg=240
+
+# patterns
+ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=white,bold,bg=red') # To have commands starting with `rm -rf` in red:
+
+# ------------------
+# source 
+# ------------------
+source $HOME/.functions
+source $HOME/.aliases
+
+# ------------------
+# Initialize modules
+# ------------------
+
+ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim
+# Download zimfw plugin manager if missing.
+if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
+  if (( ${+commands[curl]} )); then
+    curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh \
+        https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+  else
+    mkdir -p ${ZIM_HOME} && wget -nv -O ${ZIM_HOME}/zimfw.zsh \
+        https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+  fi
+fi
+# Install missing modules, and update ${ZIM_HOME}/init.zsh if missing or outdated.
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
+  source ${ZIM_HOME}/zimfw.zsh init -q
+fi
+# Initialize modules.
+source ${ZIM_HOME}/init.zsh
+
+# ------------------------------
+# Post-init module configuration
+# ------------------------------
+
+#
+# zsh-history-substring-search
+#
+
+zmodload -F zsh/terminfo +p:terminfo
+# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
+for key ('^[[A' '^P' ${terminfo[kcuu1]}) bindkey ${key} history-substring-search-up
+for key ('^[[B' '^N' ${terminfo[kcud1]}) bindkey ${key} history-substring-search-down
+for key ('k') bindkey -M vicmd ${key} history-substring-search-up
+for key ('j') bindkey -M vicmd ${key} history-substring-search-down
+unset key
+# }}} End configuration added by Zim install
+#
+
+# zsh tmux settings
+ZSH_TMUX_AUTOSTART='true'
+ZSH_TMUX_AUTOCONNECT='false' # do not autoconnect to existing tmux session, allows a new term new tmux session
+
+# # ------------------
+# # Exports (Part One)
+# # ------------------
+# export PATH="$PATH:/Users/raymonddoran/bin:/usr/local/sbin:$PATH"
+# # ----------
+# # python 2.7
+# # ----------
+# export PATH="~/Library/Python/2.7/bin:~/Library/Python/3.9/bin"
+# # ----------
+# # GO 
+# # ----------
+# export GOPATH=~/go 
+# export PATH=$GOPATH/bin:$PATH
+# export GOROOT=/usr/local/opt/go/libexec
+# ----------
+# mongodb
+# ----------
+export MONGO_PATH=/usr/local/mongodb 
+export PATH=$PATH:$MONGO_PATH/bin
+
+# # ----------
+# # jdk 8
+# # ----------
+# export PATH="/usr/local/bin/jdk8u212-b04/Contents/Home/bin:$PATH"
+# export M2_HOME=/usr/local/Cellar/maven/3.6.1/libexec/
+# export PATH="/usr/local/opt/libpq/bin:$PATH"
+# # ----------
+# # groovy
+# # ----------
+# export GROOVY_HOME=/usr/local/opt/groovy/libexec
+
+# ----------
+# PNPM
+# ----------
+export PNPM_HOME="/Users/raymonddoran/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+
+# ----------
+# FUN STUFF
+# ----------
+export GIPHY_AE_API_KEY=Co5g2PO3ezzv3UCpUkLl1yKAARtAGBMe
+export DO_NOT_TRACK=1
+
+# ------------------
+# Exports
+# ------------------
+export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:/Users/$DEFAULT_USER/.gem/ruby/3.1.0/bin:$PATH"
+export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+export MY_BRAIN="~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/MyBrain" 
+
+# ----------
+# pgsql config
+# ----------
+export ODS_DEV="db-ods.dev.edgeapps.net"
+export ODS_STAGE="db-ods.stage.edgeapps.net"
+export ODS_PROD="db-ods2.prod.edgeapps.net"
+export PGPASSFILE='/Users/raymonddoran/.pgpass'
+
+# # ----------
+# # fzf
+# # ----------
+# export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git --exclude .vim'
+
+# # ----------
+# # python 3 cc
+# # ----------
+# function cc {
+#     python3 -c "from math import *; print($*);"
+# }
+
+# alias cc='noglob cc'
+
+# ----------
+# serverless
+# ----------
+# Added by serverless binary installer
+export PATH="$HOME/.serverless/bin:$PATH"
+
+# PATH for the Google Cloud SDK.
+if [ -f '/Users/raymonddoran/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/raymonddoran/google-cloud-sdk/path.zsh.inc'; fi
+
+# enables shell command completion for gcloud.
+if [ -f '/Users/raymonddoran/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/raymonddoran/google-cloud-sdk/completion.zsh.inc'; fi
+
+# # add direnv hook
+# eval "$(direnv hook zsh)"
+
+# ------------------
+# Add Visual Studio Code (code)
+# ------------------
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
+# ------------------
+# python 3.8
+# ------------------
+if [ -d "$HOME/Library/Python/3.8/bin/" ] ; then
+    PATH="$HOME/Library/Python/3.8/bin/:$PATH"
+fi
+
+# ------------------
+# thefuck / ntfy
+# ------------------
+eval $(thefuck --alias)
+# eval $(ntfy shell-integration)
+
+# ---------------
+# jira configuration
+# ---------------
+export jiraserver="https://auctionedge.atlassian.net"
+export jirauser="raymondd@auctionedge.com"
+export jiratoken="C0Am8af13s30FibJQa1yF225"
+export JIRA_NAME=thedanielfactor
+export JIRA_PREFIX="SPARK-"
+export JIRA_RAPID_BOARD=true
+
+# ---------------
+# AWS Vault 
+# ---------------
+export AWS_VAULT_PASS_PREFIX=aws-vault
+# export AWS_VAULT_BACKEND=pass
+export AWS_VAULT_KEYCHAIN_NAME=login
+export AWS_PROFILE=edge-prod
+
+# ---------------
+# Slack
+# ---------------
+export SLACK_SIGNING_SECRET=65d59baf3f6f19d708161c73792cd08c
+export SLACK_BOT_TOKEN=xoxb-3142983592579-3145388200532-2xYAvegOYZOjqe6Vl2B9CGzm
+
