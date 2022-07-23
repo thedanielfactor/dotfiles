@@ -63,8 +63,10 @@ zmodule zsh-users/zsh-history-substring-search
 zmodule zsh-users/zsh-autosuggestions
 # }}} End configuration added by Zim install
 
-# oh-my-zsh
+# oh-my-zsh plugins
 zmodule ohmyzsh/ohmyzsh -f 'plugins/tmux' -s 'plugins/tmux/tmux.plugin.zsh' 
+zmodule ohmyzsh/ohmyzsh -f 'plugins/z' -s 'plugins/z/z.plugin.zsh' 
+# zmodule ohmyzsh/ohmyzsh -f 'plugins/thefuck' -s 'plugins/thefuck/thefuck.plugin.zsh'
 # -f 'plugins/aws' -s 'plugins/aws/aws.plugin.zsh' -f 'plugins/thefuck' -s 'plugins/thefuck/thefuck.plugin.zsh'
 #
 #

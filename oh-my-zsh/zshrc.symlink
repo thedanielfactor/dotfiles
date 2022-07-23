@@ -99,7 +99,7 @@ DEFAULT_USER="$(whoami)"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 # plugins=(sudo git history tmux tmuxinator zsh-autosuggestions zsh-completions zsh-z)
-plugins=(sudo git brew npm history tmux tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z zsh-vi-mode zsh-aws-vault alias-finder common-aliases docker docker-compose dotenv encode64 extract jira jsontools node urltools vscode web-search)
+plugins=(sudo git brew npm history tmux tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z zsh-vi-mode zsh-aws-vault alias-finder common-aliases docker docker-compose dotenv encode64 extract jira jsontools node urltools vscode web-search wakatime)
 
 # User configuration
 
@@ -220,4 +220,11 @@ eval $(thefuck --alias)
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 test -e /Users/raymonddoran/.iterm2_shell_integration.zsh && source /Users/raymonddoran/.iterm2_shell_integration.zsh || true
 
+# forgit
+source ~/Development/tdf/forgit
+source ~/Development/emoji-cli/fuzzy-emoji-zle.zsh
+
 . /usr/local/opt/asdf/libexec/asdf.sh
+
+export PNPM_HOME="/Users/raymonddoran/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
