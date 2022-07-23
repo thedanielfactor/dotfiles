@@ -33,7 +33,7 @@ selection-menu() {
 }
 
 spark-env() {                    # shoutout to raymondd and andrews for the inspiration
-  SPARK=$(z -e edge-spark-react) # -e -- echo output without cd'ing to it
+  SPARK=~/Workspaces/AE/code/edge-spark-react
   cd $SPARK
   ENV_FILE=$(selection-menu $1)
   MESSAGE="Building Spark with \033[00;32m$ENV_FILE\033[0m variables"
@@ -46,6 +46,7 @@ spark-env() {                    # shoutout to raymondd and andrews for the insp
   # cat $SPARK/.env.$1 > $SPARK/.env ## other option to avoid set
   npm run generate-graphql-types && npm start ## or `spark` alias
 }
+
 tg-source() {
   set -a
   ENV_FILE=$(selection-menu $1)
@@ -178,6 +179,16 @@ select-search() {
   echo $SELECTED_TYPE
 }
 
+sshnuc() {
+  if [ -z $1 ]; then
+    echo "What is the port#?"
+    read PORT
+  fi
+  PORT_NUMBER=${1:-$PORT} 
+  
+  ssh -p $PORT_NUMBER -i ~/.ssh/id_octopus auctionedge@prod-auction-bastion-inbound.ext.edgeapps.net
+}
+
 stock() {
   if [ -z $1 ]; then
     echo "What is the stock #?"
@@ -235,3 +246,35 @@ stock() {
   done
   echo "I hope you were satisified with this automation. \033[00;33mHave a wonderful day!\033[0m"
 }
+
+# Switch node-version when directory changes
+# https://github.com/creationix/nvm/issues/603#issuecomment-91290448
+# function chpwd() {
+# 	if [ -r $PWD/.node-version ]; then
+# 	nvm use `cat $PWD/.node-version`
+# 	elif [ -r $PWD/.nvmrc ]; then
+# 			nvm use
+# 		fi
+# 	}
+# 	chpwd
+# }
+
+# AE PSQL
+#[pgod]      PSQL To Dev ODS
+alias pgod="psql -h $ODS_DEV -U usr_raymondd -d ods_dev"
+#[pgos]      PSQL To Stage ODS
+alias pgos="psql -h $ODS_STAGE -U usr_raymondd -d ods_stage"
+#[pgop]      PSQL To Prod ODS
+alias pgop="psql -h $ODS_PROD -U usr_raymondd -d ods_prod"
+
+# Aliases for AuctionEdge
+alias tg="npm run typegen"
+alias vd="./vault-deploy.sh raymondd"
+alias vds="./vault-deploy.sh raymondd stage-appsync"
+alias vdp="./vault-deploy.sh raymondd prod-appsync"
+alias spark="npm run generate-graphql-types && npm start"
+alias vtd="npm run typegen && ~/development/auctionedge/cloud_integrations/spark_api/spark-api-appsync/vault-deploy.sh"
+alias cappsync="cd /Users/$USER/development/auctionedge/cloud_integrations/spark_api/spark-api-appsync"
+alias cspark="cd /Users/$USER/development/auctionedge/edge-spark-react"
+
+

@@ -1,3 +1,5 @@
+export POWERLEVEL9K_INSTANT_PROMPT=quiet
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -5,18 +7,10 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-# fi
-
-# Path to your oh-my-zsh installation oh-my-zsh specific setting
+# Path to your oh-my-zsh installation oh-my-zsh specific settings
 export ZSH=~/.oh-my-zsh
 # export TERM=xterm-256color
 source $ZSH/oh-my-zsh.sh
-source ~/.oh-my-zsh/custom/plugins/emoji-cli/emoji-cli.zsh
 
 # ZSH Customization Settings
 ZSH_THEME="powerlevel10k/powerlevel10k"
@@ -24,40 +18,16 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # fix pasting speed
 # ref https://github.com/zsh-users/zsh-autosuggestions/issues/238
 zstyle ':bracketed-paste-magic' active-widgets '.self-*'
-# zsh tmux settings
-ZSH_TMUX_AUTOSTART='true'
-ZSH_TMUX_AUTOCONNECT='false' # do not autoconnect to existing tmux session, allows a new term new tmux session
 
-######################
-# all of our zsh files
-typeset -U config_files
-config_files=($HOME/.dotfiles/**/*.zsh)
-# load the path files
-for file in ${(M)config_files:#*/path.zsh}
-do
-  source $file
-done
-# load everything but the path and completion files
-for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
-do
-  source $file
-done
-# initialize autocomplete here, otherwise functions won't be loaded
-# autoload -U compinit
-# compinit
-# load every completion after autocomplete loads
-for file in ${(M)config_files:#*/completion.zsh}
-do
-  source $file
-done
-unset config_files
-######################
+# zsh tmux settings
+ZSH_TMUX_AUTOSTART='false'
+ZSH_TMUX_AUTOCONNECT='false' # do not autoconnect to existing tmux session, allows a new term new tmux session
 
 # #Background Jobs Function
 # set_default POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE true
 # prompt_background_jobs() {
 # local background_jobs_number=${$(jobs -l | wc -l)// /}
-# local wrong_lines=`jobs -l | awk '/pwd now/{ count++ } END {print count}'`
+# local wrong_lines=`jobs -l | awk '/pwd now/{ count++ } END {print count}'
 # if [[ wrong_lines -gt 0 ]]; then
 #      background_jobs_number=$(( $background_jobs_number - $wrong_lines ))
 #   fi
@@ -100,7 +70,7 @@ DEFAULT_USER="$(whoami)"
 # export UPDATE_ZSH_DAYS=13
 
 #Uncomment the following line to disable colors in ls.
-#DISABLE_LS_COLORS="true"
+# DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
 # DISABLE_AUTO_TITLE="true"
@@ -125,7 +95,11 @@ DEFAULT_USER="$(whoami)"
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-plugins=(sudo git brew npm history tmux tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z hacker-quotes) # zsh-aws-vault)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+# plugins=(sudo git history tmux tmuxinator zsh-autosuggestions zsh-completions zsh-z)
+plugins=(sudo git brew npm history tmux tmuxinator zsh-autosuggestions zsh-completions zsh-syntax-highlighting zsh-z zsh-vi-mode zsh-aws-vault alias-finder common-aliases docker docker-compose dotenv encode64 extract jira jsontools node urltools vscode web-search wakatime)
 
 # User configuration
 
@@ -145,7 +119,26 @@ plugins=(sudo git brew npm history tmux tmuxinator zsh-autosuggestions zsh-compl
 # export ARCHFLAGS="-arch x86_64"
 
 # ssh
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
+export SSH_KEY_PATH="~/.ssh/rsa_id"
+
+# syntax highlighting
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+
+#styles
+# ZSH_HIGHLIGHT_STYLES[default]=none
+# ZSH_HIGHLIGHT_STYLES[function]=fg=magenta,bold
+# ZSH_HIGHLIGHT_STYLES[command]=fg=green
+# ZSH_HIGHLIGHT_STYLES[precommand]=fg=green
+# ZSH_HIGHLIGHT_STYLES[alias]=fg=green
+# ZSH_HIGHLIGHT_STYLES[builtin]=fg=green
+# #path
+# ZSH_HIGHLIGHT_STYLES[path]=fg=cyan,underline
+# ZSH_HIGHLIGHT_STYLES[path_prefix]=fg=cyan
+# ZSH_HIGHLIGHT_STYLES[path_approx]=fg=cyan
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg=240
+
+# patterns
+# ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=white,bold,bg=red') # To have commands starting with `rm -rf` in red:
 
 #---- CUSTOM ----
 #Powerlevel9k/Powerlevel10k settings
@@ -156,35 +149,15 @@ source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $HOME/.p9kgt
 source $HOME/.functions
 source $HOME/.aliases
-# source $HOME/.ae 
+source $HOME/.ae
 
 # autoload ----------------------------------------------------------------------
 autoload -Uz vcs_info 
-#autoload -Uz colors && colors
+autoload -Uz colors && colors
 autoload -U compinit && compinit
 
-# syntax highlighting
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
-
-typeset -A ZSH_HIGHLIGHT_STYLES
-#styles
-ZSH_HIGHLIGHT_STYLES[default]=none
-# ZSH_HIGHLIGHT_STYLES[function]=fg=magenta,bold
-ZSH_HIGHLIGHT_STYLES[command]=fg=green
-ZSH_HIGHLIGHT_STYLES[precommand]=fg=green
-ZSH_HIGHLIGHT_STYLES[alias]=fg=green
-ZSH_HIGHLIGHT_STYLES[builtin]=fg=green
-#path
-ZSH_HIGHLIGHT_STYLES[path]=fg=cyan,underline
-ZSH_HIGHLIGHT_STYLES[path_prefix]=fg=cyan
-ZSH_HIGHLIGHT_STYLES[path_approx]=fg=cyan
-# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg=240
-
-# patterns
-ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=white,bold,bg=red') # To have commands starting with `rm -rf` in red:
-
 #---- Export ----
-export PATH=$PATH:/Users/raymonddoran/bin:~/Library/Python/2.7/bin:~/Library/Python/3.9/bin
+export PATH=$PATH:/Users/jessicadeen/bin
 export GOPATH=~/go 
 export PATH=$GOPATH/bin:$PATH
 export GOROOT=/usr/local/opt/go/libexec
@@ -193,57 +166,24 @@ export PATH="/usr/local/opt/node@8/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 export MONGO_PATH=/usr/local/mongodb 
 export PATH=$PATH:$MONGO_PATH/bin
-export PATH="/usr/local/bin/jdk8u212-b04/Contents/Home/bin:$PATH"
-export M2_HOME=/usr/local/Cellar/maven/3.6.1/libexec/
-export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git --exclude .vim'
-export GIPHY_AE_API_KEY=Co5g2PO3ezzv3UCpUkLl1yKAARtAGBMe
-export PATH="/usr/local/opt/libpq/bin:$PATH"
-export ODS_DEV="db-ods.dev.edgeapps.net"
-export ODS_STAGE="db-ods.stage.edgeapps.net"
-export ODS_PROD="db-ods2.prod.edgeapps.net"
-export PGPASSFILE='/Users/raymonddoran/.pgpass'
-export DO_NOT_TRACK=1
-
-#[pg-o-d]      PSQL To Dev ODS
-alias pg-o-d="psql -h${ODS_DEV} -Uusr_raymondd -dods_dev"
-#[pg-o-s]      PSQL To Stage ODS
-alias pg-o-s="psql -h${ODS_STAGE} -Uusr_raymondd -dods_stage"
-#[pg-o-p]      PSQL To Prod ODS
-alias pg-o-p="psql -h${ODS_PROD} -Uusr_raymondd -dods_prod"
+export PATH="$HOME/.fastlane/bin:$PATH"
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+export LANG=en_US.UTF-8
+export PORT=3000
+path+=(
+    $(ruby -e 'puts File.join(Gem.user_dir, "bin")')
+)
 
 #---- End Export ----
-
-cc() python3 -c "from math import *; print($*);"
-alias cc='noglob cc'
-
-#---- Source ----
-[ -f ~/bin/fubectl.source ] && source ~/bin/fubectl.source
-source <(kubectl completion zsh)
+# # ColorLS settings
 # source $(dirname $(gem which colorls))/tab_complete.sh
+# alias lc='colorls'
+#---- Source ----
+# [ -f ~/bin/fubectl.source ] && source ~/bin/fubectl.source
+#  source <(kubectl completion zsh)
 #---- End Source ----
 #---- END CUSTOM ----
-alias h3=/usr/local/bin/tmp/helm
-
-export NVM_DIR="/Users/raymonddoran/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-
-# Added by serverless binary installer
-export PATH="$HOME/.serverless/bin:$PATH"
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/raymonddoran/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/raymonddoran/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/raymonddoran/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/raymonddoran/google-cloud-sdk/completion.zsh.inc'; fi
-
-export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-eval "$(direnv hook zsh)"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# alias h3=/usr/local/bin/tmp/helm`
 
 # AWS Vault 
 export AWS_VAULT_PASS_PREFIX=aws-vault
@@ -251,13 +191,40 @@ export AWS_VAULT_PASS_PREFIX=aws-vault
 export AWS_VAULT_KEYCHAIN_NAME=login
 export AWS_PROFILE=edge-prod
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/Users/raymonddoran/.sdkman"
-[[ -s "/Users/raymonddoran/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/raymonddoran/.sdkman/bin/sdkman-init.sh"
 # Add Visual Studio Code (code)
 export PATH="/usr/local/opt:/usr/local/opt/python/libexec/bin:$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
 if [ -d "$HOME/Library/Python/3.8/bin/" ] ; then
     PATH="$HOME/Library/Python/3.8/bin/:$PATH"
 fi
-export PATH="/usr/local/opt/qt/bin:$PATH"
+
+export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:/Users/$DEFAULT_USER/.gem/ruby/3.1.0/bin:$PATH"
 export MY_BRAIN="~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/MyBrain" 
+
+export jiraserver="https://auctionedge.atlassian.net"
+export jirauser="raymondd@auctionedge.com"
+export jiratoken="C0Am8af13s30FibJQa1yF225"
+
+export SLACK_SIGNING_SECRET=65d59baf3f6f19d708161c73792cd08c
+export SLACK_BOT_TOKEN=xoxb-3142983592579-3145388200532-2xYAvegOYZOjqe6Vl2B9CGzm
+
+export JIRA_NAME=thedanielfactor
+export JIRA_PREFIX="SPARK-"
+export JIRA_RAPID_BOARD=true
+
+eval $(thefuck --alias)
+
+# . /usr/local/opt/asdf/libexec/asdf.#!/bin/bash
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+test -e /Users/raymonddoran/.iterm2_shell_integration.zsh && source /Users/raymonddoran/.iterm2_shell_integration.zsh || true
+
+# forgit
+source ~/Development/tdf/forgit
+source ~/Development/emoji-cli/fuzzy-emoji-zle.zsh
+
+. /usr/local/opt/asdf/libexec/asdf.sh
+
+export PNPM_HOME="/Users/raymonddoran/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"

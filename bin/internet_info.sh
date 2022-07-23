@@ -13,7 +13,7 @@ IP=$(ipconfig getifaddr en0)
 #         PL=""
 # fi
 
-# # Speedtest
+# Speedtest
 # DL=$(cat ~/bin/bandwidth.log | awk 'NR==2{print $2}')
 # UP=$(cat ~/bin/bandwidth.log | awk 'NR==3{print $2}')
 
