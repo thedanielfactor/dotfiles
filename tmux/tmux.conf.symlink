@@ -2,6 +2,7 @@
 # credit for migration goes to github.com/tbutts
 # migration script can be found here: https://gist.github.com/tbutts/6abf7fb5b948c066bf180922fb37adcf
 
+
 # remap prefix to Control + a
 set -g prefix C-a
 unbind C-b
@@ -14,13 +15,20 @@ bind-key R source-file ~/.tmux.conf \; display-message "tmux.conf reloaded."
 bind-key ] send-prefix
 bind-key C-] last-window
 
-set -g default-terminal "xterm-256color"
+set -g default-terminal "screen-256color"
+# tell Tmux that outside terminal supports true color
+set -ga terminal-overrides ",xterm-256color*:Tc"
 # set-option -g default-command "reattach-to-user-namespace -l zsh"
+
+# set escape time lower.
+set -g escape-time 100
  
 set-option -g history-limit 30000
 
 # use vi style keybindings
 setw -g mode-keys vi
+
+set -g focus-events on
 
 # xterm-style function key sequences
 setw -g xterm-keys on
@@ -86,7 +94,7 @@ set -g status-right '#{prefix_highlight} #(eval ~/.tmux/responsive `tmux display
 set -g status-right-length 100
 set -g status-left-length 80
 
-set-window-option -g aggressive-resize
+set-window-option -g aggressive-resize off
 
 setw -g window-status-current-style fg=colour170,bg=colour239,bold
 
@@ -110,3 +118,4 @@ setw -g window-status-current-format ' #I#[fg=colour250]:#[fg=colour255]#W#[fg=c
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run '~/.tmux/plugins/tpm/tpm'
+
