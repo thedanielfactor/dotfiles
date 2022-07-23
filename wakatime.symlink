@@ -1,0 +1,14 @@
+[settings]
+debug         = false
+hidefilenames = false
+ignore        = """
+    COMMIT_EDITMSG$
+    PULLREQ_EDITMSG$
+    MERGE_MSG$
+    TAG_EDITMSG$"""
+api_key       = ba1e9ecb-a99c-4ca5-a2e6-1b40ebe79eaa
+
+[internal]
+backoff_at      = 
+backoff_retries = 0
+

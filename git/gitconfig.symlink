@@ -42,6 +42,7 @@
 [diff]
 	colorMoved = default
 [merge]
+  conflictstyle = diff3
 [mergetool]
         keepBackup = false
 [difftool]
@@ -59,3 +60,5 @@
 	email = raymond@thedanielfactor.com
 [commit]
 	verbose = true
+[credential]
+	helper = cache

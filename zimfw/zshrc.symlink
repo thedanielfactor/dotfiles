@@ -1,3 +1,5 @@
+# Fig pre block. Keep at the top of this file.
+[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && . "$HOME/.fig/shell/zshrc.pre.zsh"
 # Start configuration added by Zim install {{{
 
 # Default username to hide "user@hostname" info
@@ -116,11 +118,6 @@ ZSH_HIGHLIGHT_STYLES[path_approx]=fg=cyan
 # patterns
 ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=white,bold,bg=red') # To have commands starting with `rm -rf` in red:
 
-# ------------------
-# source 
-# ------------------
-source $HOME/.functions
-source $HOME/.aliases
 
 # ------------------
 # Initialize modules
@@ -271,6 +268,13 @@ fi
 eval $(thefuck --alias)
 # eval $(ntfy shell-integration)
 
+# ------------------
+# source 
+# ------------------
+source $HOME/.functions
+source $HOME/.aliases
+source $HOME/.ae
+
 # ---------------
 # jira configuration
 # ---------------
@@ -295,3 +299,22 @@ export AWS_PROFILE=edge-prod
 export SLACK_SIGNING_SECRET=65d59baf3f6f19d708161c73792cd08c
 export SLACK_BOT_TOKEN=xoxb-3142983592579-3145388200532-2xYAvegOYZOjqe6Vl2B9CGzm
 
+# ------------
+# Leon Config
+# ------------
+export LEON_AFTER_SPEECH=true
+export LEON_STT=true
+export LEON_STT_PROVIDER=coqui-stt
+export LEON_TTS=true
+export LEON_TTS_PROVIDER=flite
+
+# ------------
+# Theme
+# ------------
+export STARSHIP_CONFIG=~/.config/bracketed-segments.toml
+eval "$(starship init zsh)"
+
+alias luamake=/Users/raymonddoran/Development/lua-language-server/3rd/luamake/luamake
+
+# Fig post block. Keep at the bottom of this file.
+[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && . "$HOME/.fig/shell/zshrc.post.zsh"

@@ -94,7 +94,7 @@ set -g status-right '#{prefix_highlight} #(eval ~/.tmux/responsive `tmux display
 set -g status-right-length 100
 set -g status-left-length 80
 
-set-window-option -g aggressive-resize
+set-window-option -g aggressive-resize off
 
 setw -g window-status-current-style fg=colour170,bg=colour239,bold
 
