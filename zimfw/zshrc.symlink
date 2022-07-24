@@ -269,7 +269,7 @@ eval $(thefuck --alias)
 # ------------------
 source $HOME/.functions
 source $HOME/.aliases
-source $HOME/.ae
+# source $HOME/.ae
 
 # ---------------
 # jira configuration
