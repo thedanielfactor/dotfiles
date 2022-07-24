@@ -136,6 +136,7 @@ source /Users/jessicadeen/.git-completion.bash
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
 
+eval "$(pyenv init -)"
+
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/bashrc.post.bash" ]] && . "$HOME/.fig/shell/bashrc.post.bash"
-eval "$(pyenv init -)"
