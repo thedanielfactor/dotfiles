@@ -62,3 +62,5 @@
 	verbose = true
 [credential]
 	helper = cache
+[pull]
+	rebase = true
