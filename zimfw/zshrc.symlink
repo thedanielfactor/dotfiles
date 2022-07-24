@@ -1,7 +1,3 @@
-# Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && . "$HOME/.fig/shell/zshrc.pre.zsh"
-# Start configuration added by Zim install {{{
-
 # Default username to hide "user@hostname" info
 DEFAULT_USER="$(whoami)"
 
@@ -316,5 +312,4 @@ eval "$(starship init zsh)"
 
 alias luamake=/Users/raymonddoran/Development/lua-language-server/3rd/luamake/luamake
 
-# Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && . "$HOME/.fig/shell/zshrc.post.zsh"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"

@@ -273,11 +273,11 @@ jdconfigFix () {
 }
 
 jldeenMods
-jd_Symlinks
+# jd_Symlinks
 jdcolors
-#jdcrontab
-jditermConfig
-jdFontSetup
-jdconfigFix
+jdcrontab
+# jditermConfig
+# jdFontSetup
+# jdconfigFix
 
 success 'Badass macOS terminal installed!'

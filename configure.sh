@@ -190,12 +190,12 @@ zshZInstall
 configureGitCompletion
 
 # oh my zsh setup
-ohmyzshInstall
-ohmyzshPluginInstall
-pl9kInstall
-pl10kInstall
-tmuxTpmInstall
-fubectlInstall
+# ohmyzshInstall
+# ohmyzshPluginInstall
+# pl9kInstall
+# pl10kInstall
+# tmuxTpmInstall
+# fubectlInstall
 
 #vim setup
 vundleInstall
