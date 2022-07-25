@@ -7,6 +7,12 @@ Run the following to configure macOS from scratch...
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/thedanielfactor/dotfiles/mac-dev/configure.sh)"
 ```
 
+### Linux Configuration (Ubuntu derivatives)
+Run the following to configure Linux from scratch...
+```
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/thedanielfactor/dotfiles/linux-dev/configure.sh)"
+```
+
 It should go without saying, you should never run a script on your system without reading it to understand what changes it will make to your system. My scripts and code samples are no exception to the rule.
 
 If you choose to use my dotfiles, my configure script will backup your current dotfiles, but will also make changes to your crontab - it's in your best interest to understand these changes prior to opting in.
