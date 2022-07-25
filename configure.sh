@@ -140,44 +140,35 @@ fubectlInstall () {
     fi
 }
 
-vundleInstall () {
-    if [ -d "$HOME/.vim/bundle/Vundle.vim" ]; then
-        info 'vundle already exists'
-    else
-        # vimrc vundle install
-        echo ''
-        echo "Now installing vundle..."
-        echo ''
-        git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim && success 'vundle installed'
-    fi
-}
+neovimBootstrap () {
+  brew install xsel
+  brew install fd
+  brew install ssed
+  brew install ripgrep
+  brew install neovim
+  brew install stylua
+  brew install prettier
+  pip3 install pylint
+  pip3 install pylint-django
+  pip3 install django-stubs
+  pip3 install autopep8
+  pip3 install sqlformat
+  brew install delve
+  pip3 install debugpy
+  brew install lazygit
+  brew install pandoc
+  npm i -g live-server
+  brew install unzip
+  brew install curl
+  npm i -g picgo
+  brew install sqlite3
+  brew install trash-cli
 
-pathogenInstall () {
-    if [ -f "$HOME/.vim/autoload/pathogen.vim" ]; then
-        info 'pathogen already installed'
-    else
-        mkdir -p ~/.vim/autoload ~/.vim/bundle && \
-            curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim && success 'pathogen installed'
-    fi
-}
-
-nerdtreeInstall () {
-    if [ -d "$HOME/.vim/bundle/nerdtree" ]; then
-        info 'vim nerdtree already installed'
-    else
-        git clone https://github.com/scrooloose/nerdtree.git ~/.vim/bundle/nerdtree && success 'vim nerdtree installed'
-    fi
-}
-
-wombatColorSchemeInstall () {
-    if [ -f "$HOME/.vim/colors/wombat.vim" ]; then
-        info "wombat color scheme already installed"
-    else
-        # Vim color scheme install
-        git clone https://github.com/sheerun/vim-wombat-scheme.git ~/.vim/colors/wombat 
-        mv ~/.vim/colors/wombat/colors/* ~/.vim/colors/
-        success 'vim wombat color scheme installed'
-    fi
+  if [ -d "$HOME/.config/nvim" ]; then
+    echo 'Backing up existing neovim configuration.'
+    mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak"
+    ln -s $HOME/.dotfiles/nvim/ $HOME/.config/nvim && success "NeoVim config backup and symlink created"
+  fi
 }
 
 # brew setup
@@ -189,19 +180,8 @@ zshInstall
 zshZInstall
 configureGitCompletion
 
-# oh my zsh setup
-# ohmyzshInstall
-# ohmyzshPluginInstall
-# pl9kInstall
-# pl10kInstall
-# tmuxTpmInstall
-# fubectlInstall
-
-#vim setup
-vundleInstall
-pathogenInstall
-nerdtreeInstall
-wombatColorSchemeInstall
+# Neovim bootstrap
+neovimBootstrap
 
 # Pull down personal dotfiles
 echo ''

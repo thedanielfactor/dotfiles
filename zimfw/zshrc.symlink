@@ -1,3 +1,5 @@
+# Fig pre block. Keep at the top of this file.
+[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && . "$HOME/.fig/shell/zshrc.pre.zsh"
 # Default username to hide "user@hostname" info
 DEFAULT_USER="$(whoami)"
 
@@ -235,7 +237,7 @@ export PGPASSFILE='/Users/raymonddoran/.pgpass'
 # serverless
 # ----------
 # Added by serverless binary installer
-export PATH="$HOME/.serverless/bin:$PATH"
+export PATH="$HOME/.serverless/bin:$HOME/.local/bin:$PATH"
 
 # PATH for the Google Cloud SDK.
 if [ -f '/Users/raymonddoran/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/raymonddoran/google-cloud-sdk/path.zsh.inc'; fi
@@ -305,11 +307,19 @@ export LEON_TTS=true
 export LEON_TTS_PROVIDER=flite
 
 # ------------
-# Theme
+# Starship
 # ------------
-export STARSHIP_CONFIG=~/.config/bracketed-segments.toml
+export STARSHIP_CONFIG=~/.config/nerd-font-symbols.toml
+
+function set_win_title(){
+    echo -ne "\033]0; Do Epic SHIT! \007"
+}
+precmd_functions+=(set_win_title)
 eval "$(starship init zsh)"
 
 alias luamake=/Users/raymonddoran/Development/lua-language-server/3rd/luamake/luamake
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# Fig post block. Keep at the bottom of this file.
+[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && . "$HOME/.fig/shell/zshrc.post.zsh"

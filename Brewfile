@@ -33,6 +33,21 @@ brew 'yarn'
 brew 'youtube-dl'
 brew 'boxes'
 brew 'neovim'
+brew 'xsel'
+brew 'fd'
+brew 'ssed'
+brew 'ripgrep'
+brew 'neovim'
+brew 'stylua'
+brew 'prettier'
+brew 'delve'
+brew 'lazygit'
+brew 'pandoc'
+brew 'unzip'
+brew 'curl'
+brew 'sqlite3'
+brew 'trash-cli'
+brew 'starship'
 
 cask 'google-chrome'
 cask 'handbrake'
@@ -42,3 +57,12 @@ cask 'spotify'
 cask 'transmission' 
 cask 'visual-studio-code'
 cask 'vlc'
+
+  pip3 install pylint
+  pip3 install pylint-django
+  pip3 install django-stubs
+  pip3 install autopep8
+  pip3 install sqlformat
+  pip3 install debugpy
+  npm i -g live-server
+  npm i -g picgo

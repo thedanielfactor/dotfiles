@@ -8,8 +8,6 @@ symbol = "ﴃ "
 style = "blue bold"
 format = 'on \[[$symbol($subscription)\]($style)\]'
 
-# ~/.config/starship.toml
-
 [c]
 format = '\[[$symbol($version(-$name))]($style)\]'
 
@@ -53,7 +51,7 @@ format = '\[[$symbol($version)]($style)\]'
 format = '\[[$symbol$account(@$domain)(\($region\))]($style)\]'
 
 [git_branch]
-format = '\[[$symbol$branch]($style)\]'
+format = 'on \[[$symbol$branch]($style)\]'
 
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style))'
@@ -95,7 +93,7 @@ format = '\[[$symbol($version)]($style)\]'
 format = '\[[$symbol$state( \($name\))]($style)\]'
 
 [nodejs]
-format = '\[[$symbol($version)]($style)\]'
+format = 'via \[[$symbol($version)]($style)\]'
 
 [ocaml]
 format = '\[[$symbol($version)(\($switch_indicator$switch_name\))]($style)\]'
