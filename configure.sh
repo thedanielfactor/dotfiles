@@ -14,6 +14,9 @@ brewInstall () {
         elif test "$(expr substr $(uname -s) 1 5)" = "Linux"
         then
             ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"
+            echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $HOME/.profile
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            source $HOME/.profile
             success 'brew installed'
         fi
     else
@@ -26,7 +29,7 @@ brewUpdate () {
     success 'brew updated'
 }
 
-zshInstall () {
+zshInstall (){
     # zsh install
     # todo add in check for macOS 10.15 since zsh is default
     if test $(which zsh); then
@@ -140,7 +143,8 @@ fubectlInstall () {
     fi
 }
 
-neovimBootstrap () {
+neovimBrewDependancies () {
+  echo 'Installing NeoVim config dependancies.'
   brew install xsel
   brew install fd
   brew install ssed
@@ -148,28 +152,29 @@ neovimBootstrap () {
   brew install neovim
   brew install stylua
   brew install prettier
+  brew install delve
+  brew install lazygit
+  brew install pandoc
+  brew install unzip
+  brew install curl
+  brew install sqlite3
+  brew install trash-cli
+}
+
+neovimNPMDependancies () {
+  npm i -g live-server
+  npm i -g picgo
+}
+
+noevimPIPDependancies () {
   pip3 install pylint
   pip3 install pylint-django
   pip3 install django-stubs
   pip3 install autopep8
   pip3 install sqlformat
-  brew install delve
   pip3 install debugpy
-  brew install lazygit
-  brew install pandoc
-  npm i -g live-server
-  brew install unzip
-  brew install curl
-  npm i -g picgo
-  brew install sqlite3
-  brew install trash-cli
-
-  if [ -d "$HOME/.config/nvim" ]; then
-    echo 'Backing up existing neovim configuration.'
-    mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak"
-    ln -s $HOME/.dotfiles/nvim/ $HOME/.config/nvim && success "NeoVim config backup and symlink created"
-  fi
 }
+
 
 # brew setup
 brewInstall
@@ -181,7 +186,9 @@ zshZInstall
 configureGitCompletion
 
 # Neovim bootstrap
-neovimBootstrap
+neovimBrewDependancies
+neovimNPMDependancies
+neovimPIPDependencies
 
 # Pull down personal dotfiles
 echo ''
