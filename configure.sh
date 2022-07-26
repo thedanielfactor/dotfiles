@@ -185,7 +185,7 @@ zshZInstall
 configureGitCompletion
 
 # Neovim bootstrap
-neovimBrewDependancies
+# neovimBrewDependancies
 neovimNPMDependancies
 neovimPIPDependencies
 

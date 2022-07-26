@@ -1,4 +1,4 @@
-cask_args appdir: '/Applications'
+cask_args appdir: '/usr/local/bin'
 
 tap 'homebrew/bundle'
 
@@ -16,7 +16,6 @@ brew 'kubectx'
 brew 'libgit2'
 brew 'maven'
 brew 'openssl'
-# brew 'node'
 brew 'postgresql'
 brew 'python'
 brew 'reattach-to-user-namespace'
