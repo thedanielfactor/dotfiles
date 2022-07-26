@@ -14,8 +14,8 @@ brewInstall () {
         elif test "$(expr substr $(uname -s) 1 5)" = "Linux"
         then
             ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"
-            echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $HOME/.profile
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            echo 'eval "$(~/.linuxbrew/bin/brew shellenv)"' >> $HOME/.profile
+            eval "$($HOME/.linuxbrew/bin/brew shellenv)"
             source $HOME/.profile
             success 'brew installed'
         fi
@@ -174,7 +174,6 @@ noevimPIPDependancies () {
   pip3 install sqlformat
   pip3 install debugpy
 }
-
 
 # brew setup
 brewInstall
