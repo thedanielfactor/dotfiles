@@ -151,8 +151,8 @@ then
   fi
 fi
 
-jldeenMods () {
-  info "starting jldeen mods"
+TDFMods () {
+  info "starting tdf mods"
   #backup old bin, if exists
   if [ -d $HOME/bin ]; then
     info "current $HOME/bin folder, checking for existing symlink"
@@ -167,7 +167,7 @@ jldeenMods () {
   fi
 }
 
-jd_Symlinks () {
+tdf_Symlinks () {
   # symlink .dotfiles bin to ~
   ln -s $HOME/.dotfiles/bin $HOME/bin && success "symlink for $HOME/bin folder created"
 
@@ -195,12 +195,12 @@ jd_Symlinks () {
     fi
 }
 
-jdcolors () {
+tdfcolors () {
   # colorls setup
   sudo gem install colorls && success 'ls colors have been configured'
 }
 
-jdcrontab () {
+tdfcrontab () {
   #crontab additions
   add_line "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     if [[ $? -eq 0 ]]
@@ -235,7 +235,7 @@ jdcrontab () {
   success "speedtest-cli bandwidth.json created"
 }
 
-jditermConfig () {
+tdftermConfig () {
   # iterm2 config
   read -p "Do you currently use iTerm2 and would you like to set jldeen's custom colors? y/n " -n 1 -r
   echo ''
@@ -256,13 +256,13 @@ jditermConfig () {
   fi
 }
 
-jdFontSetup () {
+tdfFontSetup () {
   # install Source Code Pro nerd font
   cp $HOME/.dotfiles/Source\ Code\ Pro\ Nerd\ Font\ Complete.ttf /Library/Fonts
   success "Source Code Pro font copied successfully!"
 }
 
-jdconfigFix () {
+tdfconfigFix () {
   # .config permissions fix
   if [ -d "$HOME/.config" ]; then
     info "$HOME/.config doesn't exist, nothing to fix"
@@ -272,12 +272,12 @@ jdconfigFix () {
   fi
 }
 
-jldeenMods
-jd_Symlinks
-jdcolors
-#jdcrontab
-jditermConfig
-jdFontSetup
-jdconfigFix
+TDFMods
+tdf_Symlinks
+tdfcolors
+#tdfcrontab
+tdftermConfig
+tdfFontSetup
+tdfconfigFix
 
 success 'Badass macOS terminal installed!'

@@ -190,19 +190,25 @@ zshZInstall
 configureGitCompletion
 
 # oh my zsh setup
-ohmyzshInstall
-ohmyzshPluginInstall
-pl9kInstall
-pl10kInstall
-tmuxTpmInstall
-fubectlInstall
-
+# ohmyzshInstall
+# ohmyzshPluginInstall
+# pl9kInstall
+# pl10kInstall
+# tmuxTpmInstall
+# fubectlInstall
+#
 #vim setup
-vundleInstall
-pathogenInstall
-nerdtreeInstall
-wombatColorSchemeInstall
+# vundleInstall
+# pathogenInstall
+# nerdtreeInstall
+# wombatColorSchemeInstall
+#
+# neovim install
 
+# askify install
+
+
+# TODO:  Add check to use Fig.io or TDF dotfiles
 # Pull down personal dotfiles
 echo ''
 read -p "Do you want to use thedanielfactor's dotfiles? y/n" -n 1 -r
@@ -230,11 +236,6 @@ else
 	echo ''
     echo "You chose not to apply thedanielfactor's macOS dotfiles. You will need to configure your environment manually..."
 	echo ''
-	echo "Setting defaults for .zshrc and .bashrc..."
-	echo ''
-	echo "source $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc && echo "added zsh-syntax-highlighting to .zshrc..."
-	echo ''
-	echo "source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc && echo "added zsh-autosuggestions to .zshrc..."
 	echo ''
     echo "[ -f ~/bin/fubectl.source ] && source ~/bin/fubectl.source" >> ${ZDOTDIR:-$HOME}/.zshrc && echo "added fubectl to .zshrc..."
 	
