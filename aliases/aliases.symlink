@@ -1,6 +1,6 @@
 alias zshconfig="code ~/.zshrc"
-# alias zimconfig="nvim ~/.zimrc"
-alias ohmyzsh="nvim ~/.oh-my-zsh"
+alias zimconfig="nvim ~/.zimrc"
+# alias ohmyzsh="nvim ~/.oh-my-zsh"
 alias config='/usr/bin/git --git-dir=/Users/$(whoami)/.cfg/ --work-tree=/Users/$(whoami)'
 alias badwifi='k config use-context docker-desktop'
 alias js='~/bin/show-struct.py'
@@ -52,6 +52,8 @@ alias stop='timew stop'
 alias tws='timew summary :ids'
 alias twm='timew modify'
 alias twv='timew move'
+alias tt='taskwarrior-tui'
+
 alias 1pc='create-1pw-login.sh'
 
 # SPOTIFY

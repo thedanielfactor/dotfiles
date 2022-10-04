@@ -1,0 +1,8 @@
+{
+  "timewExecutable": "/usr/local/bin/timew",
+  "granularityInMinutes": "1",
+  "ignoredTagsForWorkingTime": [],
+  "logoForTag": {
+    "<tag>": "<iconPathRelativeToAlfredTimewarriorFolder>"
+  }
+}

@@ -64,3 +64,5 @@
 	helper = cache
 [pull]
 	rebase = true
+[fetch]
+	prune = true

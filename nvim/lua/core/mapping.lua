@@ -1,15 +1,8 @@
-vim.g.mapleader = " "
+local api = require("utils.api")
 
 local mapping = {}
 
-mapping.register = function(group_keymap)
-    for _, key_map in pairs(group_keymap) do
-        key_map.options.desc = key_map.description
-        vim.keymap.set(key_map.mode, key_map.lhs, key_map.rhs, key_map.options)
-    end
-end
-
-mapping.register({
+api.map.bulk_register({
     {
         mode = { "n" },
         lhs = "<leader><esc>",
@@ -106,7 +99,7 @@ mapping.register({
         description = "Look down history",
     },
     {
-        mode = { "n", "v" },
+        mode = { "n", "x" },
         lhs = "k",
         rhs = function()
             return vim.v.count > 0 and "k" or "gk"
@@ -115,7 +108,7 @@ mapping.register({
         description = "Move up one line",
     },
     {
-        mode = { "n", "v" },
+        mode = { "n", "x" },
         lhs = "j",
         rhs = function()
             return vim.v.count > 0 and "j" or "gj"
@@ -124,7 +117,7 @@ mapping.register({
         description = "Move down one line",
     },
     {
-        mode = { "n", "v" },
+        mode = { "n", "x" },
         lhs = "H",
         rhs = function()
             return vim.v.count > 0 and "^" or "g^"
@@ -133,7 +126,7 @@ mapping.register({
         description = "Move to the first character at the beginning of the line",
     },
     {
-        mode = { "n", "v" },
+        mode = { "n", "x" },
         lhs = "L",
         rhs = function()
             return vim.v.count > 0 and "$" or "g$"

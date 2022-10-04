@@ -1,0 +1,70 @@
+# [Created by task 2.6.2 9/21/2022 10:52:39]
+# Taskwarrior program configuration file.
+# For more documentation, see https://taskwarrior.org or try 'man task', 'man task-color',
+# 'man task-sync' or 'man taskrc'
+
+# Here is an example of entries that use the default, override and blank values
+#   variable=foo   -- By specifying a value, this overrides the default
+#   variable=      -- By specifying no value, this means no default
+#   #variable=foo  -- By commenting out the line, or deleting it, this uses the default
+
+# You can also refence environment variables:
+#   variable=$HOME/task
+#   variable=$VALUE
+
+# Use the command 'task show' to see all defaults and overrides
+
+# Files
+data.location=/Users/raymonddoran/.task
+
+# To use the default location of the XDG directories,
+# move this configuration file from ~/.taskrc to ~/.config/task/taskrc and uncomment below
+
+#data.location=~/.local/share/task
+#hooks.location=~/.config/task/hooks
+
+# Color theme (uncomment one to use)
+#include light-16.theme
+#include light-256.theme
+#include dark-16.theme
+#include dark-256.theme
+#include dark-red-256.theme
+#include dark-green-256.theme
+#include dark-blue-256.theme
+#include dark-violets-256.theme
+#include dark-yellow-green.theme
+#include dark-gray-256.theme
+#include dark-gray-blue-256.theme
+#include solarized-dark-256.theme
+#include solarized-light-256.theme
+#include no-color.theme
+
+news.version=2.6.0
+
+include /Users/raymonddoran/Workspaces/TDF/code/pomodoro-warriors/taskwarrior/taskrc
+
+uda.trackwarrior.type=string
+uda.trackwarrior.label=Total active time
+uda.trackwarrior.values=
+
+uda.trackwarrior_rate.type=string
+uda.trackwarrior_rate.label=Rate
+uda.trackwarrior_rate.values=
+
+uda.trackwarrior_total_amount.type=string
+uda.trackwarrior_total_amount.label=Total amount
+uda.trackwarrior_total_amount.values=
+
+# this allow only one task to be active
+max_active_tasks=1 
+# when you delete the task, the time tracking will be also be deleted from timewarrior 
+erase_time_on_delete=false 
+# those are tags in taskwarrior.When you add one of them the time tracking will be deleted from timewarrior
+clear_time_tags=cleartime,ctime,deletetime,dtime
+update_time_tags=update,updatetime,utime,recalc
+create_time_when_add_task=false
+rate_per_hour=84
+rate_per_hour_decimals=2
+rate_per_hour_project=Inbox:0,Other:10
+rate_format_with_spaces=10
+currency_format=de-DE,EUR

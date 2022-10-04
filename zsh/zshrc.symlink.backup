@@ -166,14 +166,6 @@ source $(dirname $(gem which colorls))/tab_complete.sh
 #---- End Source ----
 #---- END CUSTOM ----
 alias h3=/usr/local/bin/tmp/helm
-alias h3=/usr/local/bin/tmp/helm
-alias h3=/usr/local/bin/tmp/helm
-alias h3=/usr/local/bin/tmp/helm
-alias h3=/usr/local/bin/tmp/helm
-alias h3=/usr/local/bin/tmp/helm
-alias h3=/usr/local/bin/tmp/helm
-alias h3=/usr/local/bin/tmp/helm
-alias h3=/usr/local/bin/tmp/helm
 
 export NVM_DIR="/Users/raymonddoran/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
