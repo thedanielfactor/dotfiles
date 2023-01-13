@@ -1,5 +1,4 @@
-vim.bo.expandtab = true
-vim.bo.shiftwidth = 2
-vim.bo.tabstop = 2
-vim.bo.softtabstop = 2
-vim.opt_local.formatoptions = vim.opt_local.formatoptions - { "c", "r", "o" }
+vim.opt_local.expandtab = true
+vim.opt_local.shiftwidth = 2
+vim.opt_local.tabstop = 2
+vim.opt_local.softtabstop = 2

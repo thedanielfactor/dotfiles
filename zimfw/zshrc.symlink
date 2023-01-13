@@ -1,5 +1,5 @@
 # Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && . "$HOME/.fig/shell/zshrc.pre.zsh"
+[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 # Start configuration added by Zim install {{{
 
 # Default username to hide "user@hostname" info
@@ -118,7 +118,6 @@ ZSH_HIGHLIGHT_STYLES[path_approx]=fg=cyan
 # patterns
 ZSH_HIGHLIGHT_PATTERNS+=('rm -rf *' 'fg=white,bold,bg=red') # To have commands starting with `rm -rf` in red:
 
-
 # ------------------
 # Initialize modules
 # ------------------
@@ -142,7 +141,7 @@ fi
 source ${ZIM_HOME}/init.zsh
 
 # ------------------------------
-# Post-init module configuration
+# Post-init module configurationT
 # ------------------------------
 
 #
@@ -180,15 +179,9 @@ ZSH_TMUX_AUTOCONNECT='false' # do not autoconnect to existing tmux session, allo
 # ----------
 # mongodb
 # ----------
-export MONGO_PATH=/usr/local/mongodb 
-export PATH=$PATH:$MONGO_PATH/bin
+# export MONGO_PATH=/usr/local/mongodb 
+# export PATH=$PATH:$MONGO_PATH/bin
 
-# # ----------
-# # jdk 8
-# # ----------
-# export PATH="/usr/local/bin/jdk8u212-b04/Contents/Home/bin:$PATH"
-# export M2_HOME=/usr/local/Cellar/maven/3.6.1/libexec/
-# export PATH="/usr/local/opt/libpq/bin:$PATH"
 # # ----------
 # # groovy
 # # ----------
@@ -203,14 +196,14 @@ export PATH="$PNPM_HOME:$PATH"
 # ----------
 # FUN STUFF
 # ----------
-export GIPHY_AE_API_KEY=Co5g2PO3ezzv3UCpUkLl1yKAARtAGBMe
-export DO_NOT_TRACK=1
+# export GIPHY_AE_API_KEY=Co5g2PO3ezzv3UCpUkLl1yKAARtAGBMe
+# export DO_NOT_TRACK=1
 
 # ------------------
 # Exports
 # ------------------
-export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:/Users/$DEFAULT_USER/.gem/ruby/3.1.0/bin:$PATH"
-export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+# export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:/Users/$DEFAULT_USER/.gem/ruby/3.1.0/bin:$PATH"
+# export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
 export MY_BRAIN="~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/MyBrain" 
 
 # ----------
@@ -239,7 +232,7 @@ export PGPASSFILE='/Users/raymonddoran/.pgpass'
 # serverless
 # ----------
 # Added by serverless binary installer
-export PATH="$HOME/.serverless/bin:$PATH"
+# export PATH="$HOME/.serverless/bin:$PATH"
 
 # PATH for the Google Cloud SDK.
 if [ -f '/Users/raymonddoran/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/raymonddoran/google-cloud-sdk/path.zsh.inc'; fi
@@ -253,7 +246,7 @@ if [ -f '/Users/raymonddoran/google-cloud-sdk/completion.zsh.inc' ]; then . '/Us
 # ------------------
 # Add Visual Studio Code (code)
 # ------------------
-export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+# export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
 # ------------------
 # python 3.8
@@ -261,6 +254,8 @@ export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/b
 if [ -d "$HOME/Library/Python/3.8/bin/" ] ; then
     PATH="$HOME/Library/Python/3.8/bin/:$PATH"
 fi
+
+# export PATH=$PATH:/Users/raymonddoran/.local/bin
 
 # ------------------
 # thefuck / ntfy
@@ -272,8 +267,8 @@ eval $(thefuck --alias)
 # source 
 # ------------------
 source $HOME/.functions
-source $HOME/.aliases
-source $HOME/.ae
+# source $HOME/.aliases
+# source $HOME/.ae
 
 # ---------------
 # jira configuration
@@ -296,8 +291,8 @@ export AWS_PROFILE=edge-prod
 # ---------------
 # Slack
 # ---------------
-export SLACK_SIGNING_SECRET=65d59baf3f6f19d708161c73792cd08c
-export SLACK_BOT_TOKEN=xoxb-3142983592579-3145388200532-2xYAvegOYZOjqe6Vl2B9CGzm
+# export SLACK_SIGNING_SECRET=65d59baf3f6f19d708161c73792cd08c
+# export SLACK_BOT_TOKEN=xoxb-3142983592579-3145388200532-2xYAvegOYZOjqe6Vl2B9CGzm
 
 # ------------
 # Leon Config
@@ -311,10 +306,13 @@ export LEON_TTS_PROVIDER=flite
 # ------------
 # Theme
 # ------------
-export STARSHIP_CONFIG=~/.config/bracketed-segments.toml
 eval "$(starship init zsh)"
 
 alias luamake=/Users/raymonddoran/Development/lua-language-server/3rd/luamake/luamake
 
+export SDKMAN_DIR="/Users/raymonddoran/.sdkman"
+[[ -s "/Users/raymonddoran/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/raymonddoran/.sdkman/bin/sdkman-init.sh"
+test -e /Users/raymonddoran/.iterm2_shell_integration.zsh && source /Users/raymonddoran/.iterm2_shell_integration.zsh || true
+
 # Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && . "$HOME/.fig/shell/zshrc.post.zsh"
+[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"

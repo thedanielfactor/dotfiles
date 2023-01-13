@@ -1,9 +1,10 @@
--- Author: aksfiy
--- Applicable platform: Linux (tested)
--- Github: https://github.com/askfiy/nvim
+if not vim.fn.has("nvim-0.8") then
+    assert(false, "this config require nvim-0.8")
+end
 
-require("core.options")
 require("core.setting")
+require("core.options")
 require("core.mapping")
+
 require("core.plugins")
 require("core.after")

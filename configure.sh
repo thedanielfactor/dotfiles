@@ -25,13 +25,16 @@ brewInstall () {
     # Install the correct homebrew for each OS type
         if test "$(uname)" = "Darwin"
         then
-            ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             success 'brew installed'
         elif test "$(expr substr $(uname -s) 1 5)" = "Linux"
         then
-            ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"
+	    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             success 'brew installed'
         fi
+	echo '# Set PATH, MANPATH, etc., for Homebrew.' >> /Users/raymonddoran/.zprofile
+    	echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/raymonddoran/.zprofile
+    	eval "$(/opt/homebrew/bin/brew shellenv)"	
     else
         info 'brew is already installed'
     fi
@@ -210,15 +213,21 @@ configureGitCompletion
 # ohmyzshPluginInstall
 # pl9kInstall
 # pl10kInstall
-tmuxTpmInstall
+# tmuxTpmInstall
 # fubectlInstall
 
 #vim setup
-vundleInstall
-pathogenInstall
-nerdtreeInstall
-wombatColorSchemeInstall
+# vundleInstall
+# pathogenInstall
+# nerdtreeInstall
+# wombatColorSchemeInstall
+#
+# neovim install
 
+# askify install
+
+
+# TODO:  Add check to use Fig.io or TDF dotfiles
 # Pull down personal dotfiles
 echo ''
 read -p "Do you want to use thedanielfactor's dotfiles? y/n" -n 1 -r
@@ -255,11 +264,6 @@ else
 	echo ''
     echo "You chose not to apply thedanielfactor's macOS dotfiles. You will need to configure your environment manually..."
 	echo ''
-	echo "Setting defaults for .zshrc and .bashrc..."
-	echo ''
-	echo "source $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc && echo "added zsh-syntax-highlighting to .zshrc..."
-	echo ''
-	echo "source $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc && echo "added zsh-autosuggestions to .zshrc..."
 	echo ''
     echo "[ -f ~/bin/fubectl.source ] && source ~/bin/fubectl.source" >> ${ZDOTDIR:-$HOME}/.zshrc && echo "added fubectl to .zshrc..."
 	

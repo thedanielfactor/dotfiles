@@ -1,32 +1,23 @@
-local path = require("utils.api.path")
+local api = require("utils.api")
 
-local options = {
-    -- Auto save Buffer
-    auto_save_buffer = true,
-    -- Automatically switch input method, currently only for Linux and Fcitx5
-    auto_switch_input = true,
-    --  Icon style to use
-    -- • vscode (requires condicon.ttf installed)
-    -- • kind (default)options.
-    icons_style = "kind",
-    -- theme style to use
-    -- • catppuccin
-    -- • vscode
-    -- • github-theme
-    colorscheme = "catppuccin",
-    -- Whether the background is transparent
-    -- • boolean
-    transparent_background = false,
-    -- lint configuration file
-    -- • string
-    nvim_lint_dir = path.join(vim.fn.stdpath("config"), "lint"),
-    -- Code snippet storage directory
-    -- • string
-    code_snippets_directory = path.join(vim.fn.stdpath("config"), "snippets"),
-}
+local options = {}
 
--- database link configuration
-options.database_config = {
+options.transparent = false
+options.float_border = true
+options.show_winbar = true
+
+options.download_source = "https://github.com/"
+
+options.lint_directory = api.path.join(vim.fn.stdpath("config"), "lint")
+options.snippets_directory = api.path.join(vim.fn.stdpath("config"), "snippets")
+
+-- auto command manager
+options.auto_save = true
+options.auto_switch_input = true
+options.auto_restore_cursor_position = true
+options.auto_remove_new_lines_comment = true
+
+options.database_connect = {
     {
         name = "ods_dev",
         url = "postgresql://usr_raymondd@db-ods.dev.edgeapps.net:5432/ods_dev"
@@ -42,7 +33,7 @@ options.database_config = {
     {
         name = "ods_prod",
         url = "postgresql://usr_raymondd@db-ods2.prod.edgeapps.net:5432/ods_prod"
-    }
+    },
 }
 
 return options
