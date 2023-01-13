@@ -206,12 +206,12 @@ zshZInstall
 configureGitCompletion
 
 # oh my zsh setup
-ohmyzshInstall
-ohmyzshPluginInstall
-pl9kInstall
-pl10kInstall
+# ohmyzshInstall
+# ohmyzshPluginInstall
+# pl9kInstall
+# pl10kInstall
 tmuxTpmInstall
-fubectlInstall
+# fubectlInstall
 
 #vim setup
 vundleInstall
@@ -225,13 +225,22 @@ read -p "Do you want to use thedanielfactor's dotfiles? y/n" -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    echo ''
-	echo "Now pulling down thedanielfactor dotfiles..."
-	git clone https://github.com/thedanielfactor/dotfiles.git ~/.dotfiles
-	echo ''
-	cd $HOME/.dotfiles && echo "switched to .dotfiles dir..."
+    if [ ! -e ./script/bootstrap ]; 
+    then
+	    echo ''
+		echo "Now pulling down thedanielfactor dotfiles..."
+		git clone https://github.com/thedanielfactor/dotfiles.git ~/.dotfiles
+		echo ''
+		cd $HOME/.dotfiles && echo "switched to .dotfiles dir..."
+	    echo ''
+    fi 
+
+    BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+    if [[ "$BRANCH" != "mac-dev" ]]; then
 	echo ''
 	echo "Checking out macOS dev branch..." && git checkout mac-dev
+    fi
 	echo ''
 	echo "Now configuring symlinks..." && $HOME/.dotfiles/script/bootstrap
     echo ''
