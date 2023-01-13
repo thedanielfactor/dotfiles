@@ -1,7 +1,23 @@
 #!/bin/bash
 set -eou pipefail
 
-source ./script/prompt
+info () {
+  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+}
+
+user () {
+  printf "\r  [ \033[0;33m??\033[0m ] $1\n"
+}
+
+success () {
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+}
+
+fail () {
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  echo ''
+  exit
+}
 
 brewInstall () {
     # Install brew
@@ -199,7 +215,7 @@ configureGitCompletion
 # pl10kInstall
 # tmuxTpmInstall
 # fubectlInstall
-#
+
 #vim setup
 # vundleInstall
 # pathogenInstall
@@ -218,13 +234,22 @@ read -p "Do you want to use thedanielfactor's dotfiles? y/n" -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    echo ''
-	echo "Now pulling down thedanielfactor dotfiles..."
-	git clone https://github.com/thedanielfactor/dotfiles.git ~/.dotfiles
-	echo ''
-	cd $HOME/.dotfiles && echo "switched to .dotfiles dir..."
+    if [ ! -e ./script/bootstrap ]; 
+    then
+	    echo ''
+		echo "Now pulling down thedanielfactor dotfiles..."
+		git clone https://github.com/thedanielfactor/dotfiles.git ~/.dotfiles
+		echo ''
+		cd $HOME/.dotfiles && echo "switched to .dotfiles dir..."
+	    echo ''
+    fi 
+
+    BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+    if [[ "$BRANCH" != "mac-dev" ]]; then
 	echo ''
 	echo "Checking out macOS dev branch..." && git checkout mac-dev
+    fi
 	echo ''
 	echo "Now configuring symlinks..." && $HOME/.dotfiles/script/bootstrap
     echo ''
