@@ -134,10 +134,25 @@ if [ -x "$(command -v terminalizer)" ]; then
   alias t2gr="terminalizer render"
 fi
 
+# Time &  Task Tracking
+alias c='timew'
+alias ta='task add'
+alias tm='task modify'
+alias td='task done'
+alias tl='task list'
+alias stop='timew stop'
+alias tws='timew summary :ids'
+alias twm='timew modify'
+alias twv='timew move'
+alias tt='taskwarrior-tui'
+
+# pwd Management
+alias 1pc='create-1pw-login.sh'
+
+# Misc Aliases
 alias luamake=/Users/raymonddoran/Development/lua-language-server/3rd/luamake/luamake
 alias fork=/Applications/Fork.app/Contents/MacOS/Fork 
 alias chatgpt="cd ~/shellgpt/;source shellgpt/bin/activate"
-
 alias aedev=/Users/raymonddoran/Development/AE/code
 alias bddev=/Users/raymonddoran/Development/BD
 alias ptdev="cd $aedev/pipeline-toolkit"
@@ -145,8 +160,10 @@ alias ifpdev="cd $bddev/buildercloud-v2"
 alias icat="kitten icat"
 alias del="trash"
 
+# broot
 source /Users/raymonddoran/.config/broot/launcher/bash/br
 
+# alacirtty
 if [[ $TERM -eq "alacritty" ]]; then
     precmd() {
       print -Pn "\e]0/%n@%m: %~\a"
@@ -159,11 +176,11 @@ case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-# pnpm end
 
 # Temporarily put Scala 2.12 in the path.
 export PATH="/opt/homebrew/opt/scala@2.12/bin:$PATH"
 
+# Custom brew command
 function brew() {
   command brew "$@" 
 
@@ -188,10 +205,42 @@ export CXXFLAGS="-stdlib=libc++"
 # eval "$(mise activate zsh)"
 eval "$(mise activate zsh --shims)"
 
-# Q post block. Keep at the bottom of this file.
 PATH=~/.console-ninja/.bin:$PATH
 
 # Created by `pipx` on 2024-08-08 19:22:39
 export PATH="$PATH:/Users/raymonddoran/.local/bin"
 
 source ~/dotfiles/magic-cli/magic.zsh
+
+# lynx sites in the terminal
+if [ -x "$(command -v lynx)" ]; then
+  alias ddg="s -b lynx -p duckduckgo"
+fi
+
+# terminalizer
+if [ -x "$(command -v terminaliz)"]; then
+  alias t2g="terminalizer record"
+  alias t2gp="terminalizer play"
+  alias t2gr="terminalizer render"
+fi
+
+# Telehack
+alias th="ssh -p 6668 tdf@telehack.com"
+
+# icanhazdadjoke.com
+alias dj="curl -H 'Accept: text/plain' https://icanhazdadjoke.com/; echo"
+
+# TMUX
+alias tk="tmux kill-session -a"
+
+# Misc
+alias t="time"
+alias cd..="cd .."
+alias ..="cd .."
+alias ..."cd ../.."
+alias ....="cd ../../.."
+alias ./="cd"
+alias t=time
+alias lg=lazygit
+alias st=speedtest
+alias wttr="curl wttr.in"
