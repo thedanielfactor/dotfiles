@@ -244,3 +244,7 @@ alias t=time
 alias lg=lazygit
 alias st=speedtest
 alias wttr="curl wttr.in"
+
+# bun completions
+[ -s "/Users/raymonddoran/.bun/_bun" ] && source "/Users/raymonddoran/.bun/_bun"
+
