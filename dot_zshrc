@@ -1,8 +1,8 @@
 source ~/.shhhhh
 
 # ZPlug Plugin Manager
-export ZPLUG_HOME=~/.zplug
-source ~/.zplug/init.zsh
+export ZPLUG_HOME=/opt/homebrew/opt/zplug
+source $ZPLUG_HOME/init.zsh
 
 # Load zplug plugins
 zplug "zplug/zplug", hook-build:"zplug --self-manage"
