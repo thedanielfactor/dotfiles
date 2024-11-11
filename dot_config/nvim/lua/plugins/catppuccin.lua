@@ -14,7 +14,7 @@ return {
         barbecue = false,
         cmp = true,
         dap = { enabled = true, enable_ui = true },
-        dashboard = false,
+        dashboard = true,
         dropbar = false,
         flash = false,
         headlines = true,
