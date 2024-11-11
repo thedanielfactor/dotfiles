@@ -57,10 +57,6 @@ return {
   },
   {
     "eandrju/cellular-automaton.nvim",
-    config = function()
-      require("cellular-automaton").setup {
-        vim.keymap.set("n", "<leader>fml", "<cmd>CellularAutomaton make_it_rain<CR>"),
-      }
-    end,
+    vim.keymap.set("n", "<leader>fml", "<cmd>CellularAutomaton make_it_rain<CR>")
   },
 }
