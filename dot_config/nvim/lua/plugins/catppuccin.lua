@@ -15,6 +15,7 @@ return {
         cmp = true,
         dap = { enabled = true, enable_ui = true },
         dashboard = true,
+        diffview = true,
         dropbar = false,
         flash = false,
         headlines = true,
