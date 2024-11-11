@@ -210,7 +210,7 @@ PATH=~/.console-ninja/.bin:$PATH
 # Created by `pipx` on 2024-08-08 19:22:39
 export PATH="$PATH:/Users/raymonddoran/.local/bin"
 
-source ~/dotfiles/magic-cli/magic.zsh
+source ~/.config/magic_cli/magic.zsh
 
 # lynx sites in the terminal
 if [ -x "$(command -v lynx)" ]; then
