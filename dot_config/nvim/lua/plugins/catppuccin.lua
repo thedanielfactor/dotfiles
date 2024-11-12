@@ -18,6 +18,7 @@ return {
         diffview = true,
         dropbar = false,
         flash = false,
+        gitsigns = true,
         headlines = true,
         indent_blankline = false,
         mason = true,
