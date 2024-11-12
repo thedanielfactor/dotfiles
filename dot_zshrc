@@ -159,6 +159,7 @@ alias ptdev="cd $aedev/pipeline-toolkit"
 alias ifpdev="cd $bddev/buildercloud-v2"
 alias icat="kitten icat"
 alias del="trash"
+alias nv='NVIM_APPNAME=nvim.normalnvim nvim'
 
 # broot
 source /Users/raymonddoran/.config/broot/launcher/bash/br
@@ -248,3 +249,5 @@ alias wttr="curl wttr.in"
 # bun completions
 [ -s "/Users/raymonddoran/.bun/_bun" ] && source "/Users/raymonddoran/.bun/_bun"
 
+export ZSH_COPILOT_AI_PROVIDER="openai"  # or "anthropic"
+source ~/.zsh-copilot/zsh-copilot.plugin.zsh
