@@ -1,9 +1,0 @@
-#!/bin/bash
-. "$GIT_COMMON_DIR/hooks/change_detector.sh"
-. "$GIT_COMMON_DIR/hooks/php/composer/react.sh"
-
-if has_changed post-merge composer.lock
-then
-	echo "composer.lock has changed!"
-	react
-fi

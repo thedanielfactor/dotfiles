@@ -1,0 +1,38 @@
+return {
+  {
+    "echasnovski/mini.map",
+    version = false,
+    config = function()
+      require("mini.map").setup {
+        -- General settings
+        options = {
+          -- Set the width of the mini map
+          width = 15,
+          -- Set the height of the mini map
+          height = 14,
+          -- Set the background color of the mini map
+          background_color = "#282828",
+          -- Set the foreground color of the mini map
+          foreground_color = "#ebdbb2",
+        },
+      }
+    end,
+    keys = {
+      {
+        "<leader>mm",
+        function() require("mini.map").toggle() end,
+        desc = "Toggle Mini Map",
+      },
+      {
+        "<leader>mf",
+        function() require("mini.map").toggle_focus() end,
+        desc = "Toggle Mini Map Focus",
+      },
+      {
+        "<leader>mr",
+        function() require("mini.map").refresh() end,
+        desc = "Mini Map Refresh",
+      },
+    },
+  },
+}
