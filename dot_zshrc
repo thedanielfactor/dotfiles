@@ -159,7 +159,10 @@ alias ptdev="cd $aedev/pipeline-toolkit"
 alias ifpdev="cd $bddev/buildercloud-v2"
 alias icat="kitten icat"
 alias del="trash"
-alias nv='NVIM_APPNAME=nvim.normalnvim nvim'
+alias nv='NVIM_APPNAME=nvim-normal-nvim nvim'
+alias na='NVIM_APPNAME=nvim-astro nvim'
+alias nt='NVIM_APPNAME=nvim-custom-astro nvim'
+alias vt='NVIM_APPNAME=nvim-tdf nvim'
 
 # broot
 source /Users/raymonddoran/.config/broot/launcher/bash/br
