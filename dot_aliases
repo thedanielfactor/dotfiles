@@ -1,0 +1,116 @@
+alias config='/usr/bin/git --git-dir=/Users/$(whoami)/.cfg/ --work-tree=/Users/$(whoami)'
+alias badwifi='k config use-context docker-desktop'
+alias js='~/bin/show-struct.py'
+
+# Terminal Replacements
+# RM
+alias del="trash"
+alias rm="echo Use 'del', or the full path i.e. '/bin/rm'"
+
+# EXA / COLORLS
+# Use 'exa' if it is available, if not try colorls
+if [ -x "$(command -v exa)" ]; then
+  alias ls="exa --icons"
+  alias la="exa --long --all --group --grid --icons"
+  alias lt="exa --tree --icons --level=3"
+elif [ -x "$(command -v colorls)" ]; then
+  alias lc='colorls -la'
+  alias ls='colorls --sd -A'
+fi
+
+# BAT 
+if [ -x "$(command -v bat)" ]; then
+  alias cat='bat'
+fi
+
+# TLDR
+if [ -x "$(command -v tldr)" ]; then 
+  alias manf='/usr/bin/man'
+  alias man='tldr'
+fi
+
+# vim
+if [ -x "$(command -v nvim)" ]; then
+  alias v="nvim"
+  alias vi="nvim"
+elif [ -x "$(command -v vim)" ]; then
+  alias v="vim"
+  alias vi="vim"
+fi
+
+# SUPER IMPORTANT ALIASES!!
+alias acse="/usr/local/bin/acs-engine"
+alias c='timew'
+alias ta='task add'
+alias tm='task modify'
+alias td='task done'
+alias tl='task list'
+alias stop='timew stop'
+alias tws='timew summary :ids'
+alias twm='timew modify'
+alias twv='timew move'
+alias tt='taskwarrior-tui'
+
+alias 1pc='create-1pw-login.sh'
+
+# SPOTIFY
+alias sp="spotify"
+alias spv="spotify vol"
+alias spvu="spotify vol up"
+alias spvd="spotify vol down"
+alias spvn="spotify next"
+
+# SPOTIFY play urls
+alias spu="spotify play uri "
+alias spshare="spotify share url"
+alias heroes="spotify play david bowie heroes"
+alias csa="spotify play styx come sail away"
+alias heartless="play ASPyN heartless"
+alias onrepeat="spotify play uri spotify:playlist:37i9dQZF1Eplh3RhbO4Csi"
+alias sp2020="spotify play uri spotify:playlist:37i9dQZF1EMdPDVtsUjRYw"
+alias sp2017="spotify play uri spotify:playlist:37i9dQZF1E9HWDqGanExgi"
+alias sprr="spotify play uri spotify:playlist:37i9dQZEVXbck8blB0yyBa"
+alias spdw="spotify play uri spotify:playlist:37i9dQZEVXcLLDv7JVXSPj"
+alias spdm1="spotify play uri spotify:playlist:37i9dQZF1E36vBQObMCcNU"
+alias spdm2="spotify play uri spotify:playlist:37i9dQZF1E34Tq59JA5BsQ"
+alias spdm3="spotify play uri spotify:playlist:37i9dQZF1E37iJl3sIXmoA"
+alias spdm4="spotify play uri spotify:playlist:37i9dQZF1E37pYIFBksER6"
+alias spdm5="spotify play uri spotify:playlist:37i9dQZF1E35fWlQdf0S3M"
+alias spdm6="spotify play uri spotify:playlist:37i9dQZF1E35ms9IuxreYz"
+alias sptry="spotify play uri spotify:track:1dLvNP6I96hNXdf5IJ780N"
+
+if [ -x "$(command -v lynx)" ]; then
+  alias ddg="s -b lynx -p duckduckgo"
+fi
+
+if [ -x "$(command -v terminaliz)"]; then
+  alias t2g="terminalizer record"
+  alias t2gp="terminalizer play"
+  alias t2gr="terminalizer render"
+fi
+
+# Telehack
+alias th="ssh -p 6668 tdf@telehack.com"
+
+# icanhazdadjoke.com
+alias dj="curl -H 'Accept: text/plain' https://icanhazdadjoke.com/; echo"
+
+# TMUX
+alias tk="tmux kill-session -a"
+
+alias t="time"
+
+alias cd..="cd .."
+alias ..="cd .."
+alias ..."cd ../.."
+alias ....="cd ../../.."
+alias ./="cd"
+alias t=time
+alias lg=lazygit
+alias st=speedtest
+alias wsh="webstorm ."
+alias icd=~/Library/Mobile Documents/com~apple~CloudDocs/
+alias cdmb="cd ~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/MyBrain"
+alias wmip="curl -s http://checkip.dyndns.org/ | sed 's/[a-zA-Z<>/ :]//g'"
+alias icloud=~/Library/Mobile\ Documents/com~apple~CloudDocs/
+alias wttr="curl wttr.in"

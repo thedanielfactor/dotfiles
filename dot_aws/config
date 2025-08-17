@@ -1,0 +1,126 @@
+[default]
+output=json
+region=us-west-2
+
+[profile edge-prod]
+region=us-west-2
+mfa_serial=arn:aws:iam::125147775665:mfa/raymondd
+credential_process=/usr/local/bin/aws-vault exec edge-prod --json --prompt=oascript
+output = json
+
+[profile edge-dev]
+region=us-west-2
+role_arn=arn:aws:iam::682591188398:role/DevelopmentFullAdmin
+mfa_serial=arn:aws:iam::125147775665:mfa/raymondd
+credential_process=/usr/local/bin/aws-vault exec edge-dev --json --prompt=oascript
+source_profile=edge-prod
+
+[profile PSE-production/ReadOnly]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 662270267147
+granted_sso_role_name      = ReadOnly
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile PSE-production/ReadOnly
+granted_color = red 
+granted_icon = fingerprint
+
+[profile PSE-staging/Administrator]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 545988122771
+granted_sso_role_name      = Administrator
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile PSE-staging/Administrator
+granted_color = yellow 
+granted_icon = circle 
+
+[profile PSE-uat/Administrator]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 235157861812
+granted_sso_role_name      = Administrator
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile PSE-uat/Administrator
+granted_color = yellow 
+granted_icon = circle 
+
+[profile infrastructure-development/Administrator]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 557861512830
+granted_sso_role_name      = Administrator
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile infrastructure-development/Administrator
+granted_color = blue 
+granted_icon = circle 
+
+[profile infrastructure-preprod/Administrator]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 471281718230
+granted_sso_role_name      = Administrator
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile infrastructure-preprod/Administrator
+granted_color = red 
+granted_icon = fingerprint
+
+[profile infrastructure-production/ReadOnly]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 647572050629
+granted_sso_role_name      = ReadOnly
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile infrastructure-production/ReadOnly
+granted_color = red 
+granted_icon = fingerprint
+
+[profile infrastructure-staging/Administrator]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 636416372059
+granted_sso_role_name      = Administrator
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile infrastructure-staging/Administrator
+granted_color = yellow
+granted_icon = circle 
+
+[profile infrastructure-uat/Administrator]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 420281154927
+granted_sso_role_name      = Administrator
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile infrastructure-uat/Administrator
+granted_color = yellow
+granted_icon = circle 
+
+[profile internal-tools/Developer]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 364829957068
+granted_sso_role_name      = Developer
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile internal-tools/Developer
+granted_color = gray
+granted_icon = square 
+
+[profile internal-tools/ReadOnly]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 364829957068
+granted_sso_role_name      = ReadOnly
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile internal-tools/ReadOnly
+granted_color = gray
+granted_icon = square 
+
+[profile sandbox-raymondd/Administrator]
+granted_sso_start_url      = `https://d-926769fbaa.awsapps.com/start/#`
+granted_sso_region         = us-west-2
+granted_sso_account_id     = 135808924015
+granted_sso_role_name      = Administrator
+common_fate_generated_from = aws-sso
+credential_process         = granted credential-process --profile sandbox-raymondd/Administrator
+granted_color = orange
+granted_icon = circle
