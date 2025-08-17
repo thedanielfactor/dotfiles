@@ -1,0 +1,2 @@
+#!/bin/bash
+"$GIT_COMMON_DIR/hooks/php/ctags/update-ctags" >/dev/null 2>&1 &
