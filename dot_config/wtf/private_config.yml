@@ -1,0 +1,50 @@
+wtf:
+  colors:
+    border:
+      focusable: darkslateblue
+      focused: orange
+      normal: gray
+  grid:
+    columns: [100,50]
+    rows: [10, 10, 10]
+  refreshInterval: 1
+  mods:
+    clocks_a:
+      colors:
+        rows:
+          even: "lightblue"
+          odd: "white"
+      enabled: true
+      locations:
+        Vancouver: "America/Vancouver"
+        Toronto: "America/Toronto"
+      position:
+        top: 0
+        left: 0 
+        height: 1
+        width: 1
+      refreshInterval: 15
+      sort: "alphabetical"
+      title: "Clocks A"
+      type: "clocks"
+    feedreader:
+      enabled: true
+      feeds:
+      - http://feeds.bbci.co.uk/news/rss.xml
+      feedLimit: 10
+      position:
+        top: 1
+        left: 0 
+        width: 1 
+        height: 1
+      refreshInterval: 14400
+    ipinfo:
+      colors:
+        name: "lightblue"
+        value: "white"
+      enabled: true
+      position:
+        top: 2
+        left: 0 
+        height: 1
+        width: 1
