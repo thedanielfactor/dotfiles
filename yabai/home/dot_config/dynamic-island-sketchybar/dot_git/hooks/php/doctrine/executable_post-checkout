@@ -1,0 +1,13 @@
+#!/bin/bash
+. "$GIT_COMMON_DIR/hooks/change_detector.sh"
+. "$GIT_COMMON_DIR/hooks/php/doctrine/update-schema"
+
+if has_changed post-checkout \
+	composer.lock \
+	src/*/*/Entity \
+	src/*/*/Resources/config/doctrine \
+	src/*/Entity \
+	src/*/Resources/config/doctrine
+then
+	updateSchema
+fi
