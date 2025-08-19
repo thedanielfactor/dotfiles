@@ -1,0 +1,9 @@
+# ---------------
+# jira configuration
+# ---------------
+export jiraserver="https://auctionedge.atlassian.net"
+export jirauser="raymondd@auctionedge.com"
+export jiratoken="C0Am8af13s30FibJQa1yF225"
+export JIRA_NAME=thedanielfactor
+export JIRA_PREFIX="IN-"
+export JIRA_RAPID_BOARD=true
