@@ -52,7 +52,7 @@ export PGPASSFILE='/Users/raymonddoran/.pgpass'
 # source 
 # ------------------
 source $HOME/.functions
-source $HOME/.dotfiles/zsh/ae.zsh
+source $HOME/ae.zsh
 
 # ---------------
 # AWS Vault 
