@@ -194,8 +194,6 @@ export GPG_TTY=$(tty)
 # Node GYP fix
 export CXXFLAGS="-stdlib=libc++"
 
-# eval "$(mise activate zsh)"
-eval "$(mise activate zsh --shims)"
 
 PATH=~/.console-ninja/.bin:$PATH
 
@@ -255,3 +253,5 @@ if [ -f '/Users/raymonddoran/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . 
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/raymonddoran/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/raymonddoran/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
+eval "$(mise activate zsh --shims)"
