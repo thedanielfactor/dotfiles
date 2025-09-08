@@ -1,3 +1,12 @@
+# ----------
+# pgsql config
+# ----------
+export ODS_DEV="db-ods.dev.edgeapps.net"
+export ODS_STAGE="db-ods.stage.edgeapps.net"
+export ODS_PROD="db-ods2.prod.edgeapps.net"
+export CAT_STAGE="db-catalyst.stage.edgeapps.net"
+export PGPASSFILE='$HOME/.pgpass'
+
 selection-menu() {
   # spiffy selection menu
   # echo ''

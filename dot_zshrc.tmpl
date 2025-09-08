@@ -35,24 +35,21 @@ export EDITOR='nvim'
 #     ln -sf "$SSH_AUTH_SOCK" ~/.ssh/socket
 # fi
 # export SSH_AUTH_SOCK=~/.ssh/socket
-export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
+{{ if eq .chezmoi.os "darwin" -}}
+  export SSH_AUTH_SOCK=~/Library/Containers/com.apple.SSHAgentService/Data/socket
+{{ else if eq .chezmoi.os "linux" -}}
+  export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent.socket
+{{ end }}
 
 export PATH="$(brew --prefix)/bin:$PATH"
-
-# ----------
-# pgsql config
-# ----------
-export ODS_DEV="db-ods.dev.edgeapps.net"
-export ODS_STAGE="db-ods.stage.edgeapps.net"
-export ODS_PROD="db-ods2.prod.edgeapps.net"
-export CAT_STAGE="db-catalyst.stage.edgeapps.net"
-export PGPASSFILE='/Users/raymonddoran/.pgpass'
 
 # ------------------
 # source 
 # ------------------
 source $HOME/.functions
-source $HOME/ae.zsh
+{{- if eq .chezmoi.hostname "ae-mbp-m3pro" -}}
+  source $HOME/ae.zsh
 
 # ---------------
 # AWS Vault 
@@ -62,14 +59,7 @@ export AWS_VAULT_PASS_PREFIX=aws-vault
 export AWS_VAULT_KEYCHAIN_NAME=login
 export AWS_PROFILE=edge-prod
 
-# ------------
-# Leon Config
-# ------------
-export LEON_AFTER_SPEECH=true
-export LEON_STT=true
-export LEON_STT_PROVIDER=coqui-stt
-export LEON_TTS=true
-export LEON_TTS_PROVIDER=flite
+{{- end }}
 
 # ------------
 # ZK Config
@@ -85,6 +75,7 @@ eval "$(starship init zsh)"
 # Use 'eza' if it is available, if not try colorls
 if [ -x "$(command -v eza)" ]; then
   alias ls="eza --icons"
+  alias ll="eza --long --icons --color-scale-mode=gradient"
   alias la="eza --long --all --group --grid --icons --color-scale-mode=gradient"
   alias lt="eza --tree --icons --level=3"
 elif [ -x "$(command -v colorls)" ]; then
@@ -123,37 +114,43 @@ if [ -x "$(command -v terminalizer)" ]; then
 fi
 
 # Time &  Task Tracking
-alias c='timew'
-alias ta='task add'
-alias tm='task modify'
-alias td='task done'
-alias tl='task list'
-alias stop='timew stop'
-alias tws='timew summary :ids'
-alias twm='timew modify'
-alias twv='timew move'
-alias tt='taskwarrior-tui'
+if [ -x "$(command -v timew)" ]; then
+  alias c='timew'
+  alias stop='timew stop'
+  alias tws='timew summary :ids'
+  alias twm='timew modify'
+  alias twv='timew move'
+fi
+
+if [ -x "$(command -v task)" ]; then
+  alias t='task'
+  alias ta='task add'
+  alias tm='task modify'
+  alias td='task done'
+  alias tl='task list'
+fi
+
+if [ -x "$(command -v taskwarrior-tui)" ]; then
+  alias twui='taskwarrior-tui'
+fi
 
 # pwd Management
 alias 1pc='create-1pw-login.sh'
 
 # Misc Aliases
-alias luamake=/Users/raymonddoran/Development/lua-language-server/3rd/luamake/luamake
+alias luamake=$HOME/Development/lua-language-server/3rd/luamake/luamake
 alias fork=/Applications/Fork.app/Contents/MacOS/Fork 
 alias chatgpt="cd ~/shellgpt/;source shellgpt/bin/activate"
-alias aedev=/Users/raymonddoran/Development/AE/code
-alias bddev=/Users/raymonddoran/Development/BD
-alias ptdev="cd $aedev/pipeline-toolkit"
-alias ifpdev="cd $bddev/buildercloud-v2"
 alias icat="kitten icat"
 alias del="trash"
-alias nv='NVIM_APPNAME=nvim-normal-nvim nvim'
-alias na='NVIM_APPNAME=nvim-astro nvim'
-alias nt='NVIM_APPNAME=nvim-custom-astro nvim'
-alias vt='NVIM_APPNAME=nvim-tdf nvim'
+
+{{- if eq .chezmoi.hostname "ae-mbp-m3pro" -}}
+  alias aedev=$HOME/Development/AE/code
+  alias ptdev="cd $aedev/pipeline-toolkit"
+{{- end }}
 
 # broot
-source /Users/raymonddoran/.config/broot/launcher/bash/br
+source $HOME/.config/broot/launcher/bash/br
 
 # alacirtty
 if [[ $TERM -eq "alacritty" ]]; then
@@ -163,7 +160,7 @@ if [[ $TERM -eq "alacritty" ]]; then
 fi
 
 # pnpm
-export PNPM_HOME="/Users/raymonddoran/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -181,24 +178,14 @@ function brew() {
   fi
 }
 
-#  NeoVim for begginers configuration
-# ASKFIY_NVIM=~/.config/nvim-askfiy
-# export ASKFIY_NVIM
-# alias nvak='XDG_DATA_HOME=$ASKFIY_NVIM/share XDG_CONFIG_HOME=$ASKFIY_NVIM nvim'
-# alias astro='nvim -u ~/.config/astronvim/entry.lua'
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export GPG_TTY=$(tty)
 
-# Node GYP fix
-export CXXFLAGS="-stdlib=libc++"
-
-
 PATH=~/.console-ninja/.bin:$PATH
 
 # Created by `pipx` on 2024-08-08 19:22:39
-export PATH="$PATH:/Users/raymonddoran/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 
 source ~/.config/magic_cli/magic.zsh
 
@@ -236,7 +223,7 @@ alias st=speedtest
 alias wttr="curl wttr.in"
 
 # bun completions
-[ -s "/Users/raymonddoran/.bun/_bun" ] && source "/Users/raymonddoran/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 export ZSH_COPILOT_AI_PROVIDER="openai"  # or "anthropic"
 source ~/.zsh-copilot/zsh-copilot.plugin.zsh
@@ -249,10 +236,11 @@ command -v funky &>/dev/null && eval "$(funky --init zsh)"
 eval "$(mcfly init zsh)"
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/raymonddoran/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/raymonddoran/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '$HOME/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '$HOME/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/raymonddoran/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/raymonddoran/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '$HOME/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '$HOME/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
 
 # eval "$(mise activate zsh)"
 eval "$(mise activate zsh --shims)"
