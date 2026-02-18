@@ -4,7 +4,7 @@ set -euo pipefail
 readonly UAID=${1^^}
 readonly machineID=${2-"1"}
 
-readonly sparkPlugProject="~/Development/AE/code/spark-plug-project"
+readonly sparkPlugProject="~/Development/AE/spark-plug-project"
 readonly ansibleHost="$(printf 'ae%02d-%s' $machineID $UAID)"
 readonly hostData=$(ansible-inventory \
     -i "$sparkPlugProject/ansible/inventory/hosts.ini" \

@@ -6,6 +6,8 @@ export ODS_STAGE="db-ods.stage.edgeapps.net"
 export ODS_PROD="db-ods2.prod.edgeapps.net"
 export CAT_STAGE="db-catalyst.stage.edgeapps.net"
 export PGPASSFILE='$HOME/.pgpass'
+export AE_GH_PACKAGE_TOKEN=REDACTED
+export EDGE_USERNAME=raymondd
 
 selection-menu() {
   # spiffy selection menu

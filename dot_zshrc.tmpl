@@ -37,7 +37,8 @@ export EDITOR='nvim'
 # export SSH_AUTH_SOCK=~/.ssh/socket
 
 {{ if eq .chezmoi.os "darwin" -}}
-  export SSH_AUTH_SOCK=~/Library/Containers/com.apple.SSHAgentService/Data/socket
+  # export SSH_AUTH_SOCK=~/Library/Containers/com.apple.SSHAgentService/Data/socket
+  export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 {{ else if eq .chezmoi.os "linux" -}}
   export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent.socket
 {{ end }}
@@ -241,6 +242,7 @@ if [ -f '$HOME/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '$HOME/Downloa
 # The next line enables shell command completion for gcloud.
 if [ -f '$HOME/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '$HOME/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 
+eval "$(mise activate zsh --shims)"
 
 # eval "$(mise activate zsh)"
-eval "$(mise activate zsh --shims)"
+export PATH="$HOME/.local/share/mise/shims:$PATH"
