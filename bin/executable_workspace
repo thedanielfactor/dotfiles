@@ -1,0 +1,374 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+CONFIG_FILE="$HOME/.config/workspace/config.json"
+
+usage() {
+  cat <<EOF
+Usage:
+  workspace list
+  workspace open <name>
+  workspace close <name>
+  workspace restart <name>
+  workspace <name>
+
+Examples:
+  workspace list
+  workspace open work
+  workspace close work
+  workspace restart olddog
+  workspace ai
+EOF
+}
+
+require_cmd() {
+  command -v "$1" >/dev/null 2>&1 || {
+    echo "Error: '$1' is required but not installed." >&2
+    exit 1
+  }
+}
+
+require_file() {
+  local file="$1"
+  [[ -f "$file" ]] || {
+    echo "Error: Required file not found:" >&2
+    echo "  $file" >&2
+    exit 1
+  }
+}
+
+require_cmd jq
+require_cmd open
+require_cmd osascript
+require_file "$CONFIG_FILE"
+
+get_setting() {
+  local key="$1"
+  jq -r --arg key "$key" '.settings[$key] // empty' "$CONFIG_FILE"
+}
+
+LOG_FILE="$(get_setting "log_file")"
+DEFAULT_DELAY="$(get_setting "default_delay_seconds")"
+DEFAULT_DELAY="${DEFAULT_DELAY:-0.5}"
+
+ensure_log_dir() {
+  if [[ -n "${LOG_FILE:-}" ]]; then
+    mkdir -p "$(dirname "$LOG_FILE")"
+  fi
+}
+
+log() {
+  local msg="$1"
+  local ts
+  ts="$(date '+%Y-%m-%d %H:%M:%S')"
+  echo "[$ts] $msg"
+  if [[ -n "${LOG_FILE:-}" ]]; then
+    ensure_log_dir
+    echo "[$ts] $msg" >> "$LOG_FILE"
+  fi
+}
+
+list_workspaces() {
+  jq -r '
+    .workspaces
+    | to_entries[]
+    | "\(.key)\t=>\t\(.value.description // "No description")"
+  ' "$CONFIG_FILE" | sort
+}
+
+workspace_exists() {
+  local ws="$1"
+  jq -e --arg ws "$ws" '.workspaces[$ws]' "$CONFIG_FILE" >/dev/null 2>&1
+}
+
+get_workspace_value() {
+  local ws="$1"
+  local key="$2"
+  jq -r --arg ws "$ws" --arg key "$key" '
+    .workspaces[$ws][$key] // empty
+  ' "$CONFIG_FILE"
+}
+
+get_workspace_array() {
+  local ws="$1"
+  local key="$2"
+  jq -r --arg ws "$ws" --arg key "$key" '
+    .workspaces[$ws][$key][]? // empty
+  ' "$CONFIG_FILE"
+}
+
+sleep_for_workspace() {
+  local ws="$1"
+  local delay
+  delay="$(get_workspace_value "$ws" "delay_seconds")"
+  delay="${delay:-$DEFAULT_DELAY}"
+
+  if [[ -n "$delay" && "$delay" != "0" ]]; then
+    sleep "$delay"
+  fi
+}
+
+app_is_running() {
+  local app_name="$1"
+  osascript -e "tell application \"System Events\" to (name of processes) contains \"$app_name\"" \
+    2>/dev/null | grep -q "true"
+}
+
+open_app_if_needed() {
+  local app_name="$1"
+
+  if app_is_running "$app_name"; then
+    log "App already running: $app_name"
+  else
+    log "Opening app: $app_name"
+    open -a "$app_name"
+  fi
+}
+
+open_app_always() {
+  local app_name="$1"
+  log "Opening app (always): $app_name"
+  open -a "$app_name"
+}
+
+run_command() {
+  local cmd="$1"
+  log "Running command: $cmd"
+  /bin/zsh -lc "$cmd"
+}
+
+chrome_workspace_open() {
+  local chrome_ws="$1"
+
+  if [[ -z "$chrome_ws" ]]; then
+    return 0
+  fi
+
+  if command -v chrome-profile >/dev/null 2>&1; then
+    log "Launching chrome workspace: $chrome_ws"
+    chrome-profile workspace "$chrome_ws"
+  elif [[ -x "$HOME/bin/chrome-profile" ]]; then
+    log "Launching chrome workspace via full path: $chrome_ws"
+    "$HOME/bin/chrome-profile" workspace "$chrome_ws"
+  else
+    log "Warning: chrome-profile not found; skipping browser launch"
+  fi
+}
+
+open_obsidian_uri() {
+  local uri="$1"
+
+  if [[ -z "$uri" ]]; then
+    return 0
+  fi
+
+  log "Opening Obsidian URI: $uri"
+  open "$uri"
+}
+
+launch_wezterm_workspace() {
+  local ws="$1"
+  local workspace_dir workspace_name
+
+  workspace_dir="$(get_workspace_value "$ws" "workspace_dir")"
+  workspace_name="$(get_workspace_value "$ws" "terminal_title")"
+
+  if [[ -z "$workspace_dir" || -z "$workspace_name" ]]; then
+    return 0
+  fi
+
+  if [[ ! -d "$workspace_dir" ]]; then
+    log "Warning: wezterm workspace_dir does not exist: $workspace_dir"
+    return 0
+  fi
+
+  local wezterm_bin=""
+  if command -v wezterm >/dev/null 2>&1; then
+    wezterm_bin="wezterm"
+  elif [[ -x "/opt/homebrew/bin/wezterm" ]]; then
+    wezterm_bin="/opt/homebrew/bin/wezterm"
+  elif [[ -x "/Applications/WezTerm.app/Contents/MacOS/wezterm" ]]; then
+    wezterm_bin="/Applications/WezTerm.app/Contents/MacOS/wezterm"
+  else
+    log "Warning: wezterm not found; skipping wezterm launch"
+    return 0
+  fi
+
+  mapfile -t wez_tabs < <(get_workspace_array "$ws" "terminal_tabs")
+  if [[ ${#wez_tabs[@]} -eq 0 ]]; then
+    log "No terminal_tabs configured for workspace: $ws"
+    return 0
+  fi
+
+  local tabs_joined=""
+  local tab
+  for tab in "${wez_tabs[@]}"; do
+    [[ -n "$tab" ]] || continue
+    if [[ -n "$tabs_joined" ]]; then
+      tabs_joined="${tabs_joined}|${tab}"
+    else
+      tabs_joined="$tab"
+    fi
+  done
+
+  log "Launching WezTerm workspace: $workspace_name ($workspace_dir)"
+  WEZTERM_WORKSPACE_BOOTSTRAP=1 \
+  WEZTERM_WORKSPACE_NAME="$workspace_name" \
+  WEZTERM_WORKSPACE_DIR="$workspace_dir" \
+  WEZTERM_WORKSPACE_TABS="$tabs_joined" \
+  "$wezterm_bin" start >/dev/null 2>&1 &
+}
+
+quit_app() {
+  local app_name="$1"
+
+  if app_is_running "$app_name"; then
+    log "Quitting app: $app_name"
+    osascript <<EOF >/dev/null 2>&1 || true
+tell application "$app_name"
+  quit
+end tell
+EOF
+  else
+    log "App not running, skip quit: $app_name"
+  fi
+}
+
+close_workspace() {
+  local ws="$1"
+
+  if ! workspace_exists "$ws"; then
+    echo "Error: Workspace '$ws' not found." >&2
+    echo >&2
+    echo "Available workspaces:" >&2
+    list_workspaces >&2
+    exit 1
+  fi
+
+  log "Closing workspace: $ws"
+
+  mapfile -t close_apps < <(get_workspace_array "$ws" "close_apps")
+  for app in "${close_apps[@]:-}"; do
+    [[ -n "$app" ]] || continue
+    quit_app "$app"
+    sleep_for_workspace "$ws"
+  done
+
+  log "Workspace closed: $ws"
+}
+
+open_workspace() {
+  local ws="$1"
+
+  if ! workspace_exists "$ws"; then
+    echo "Error: Workspace '$ws' not found." >&2
+    echo >&2
+    echo "Available workspaces:" >&2
+    list_workspaces >&2
+    exit 1
+  fi
+
+  log "Opening workspace: $ws"
+
+  local chrome_ws
+  chrome_ws="$(get_workspace_value "$ws" "chrome_workspace")"
+  chrome_workspace_open "$chrome_ws"
+  sleep_for_workspace "$ws"
+
+  local obsidian_uri
+  obsidian_uri="$(get_workspace_value "$ws" "obsidian_uri")"
+  open_obsidian_uri "$obsidian_uri"
+  sleep_for_workspace "$ws"
+
+  mapfile -t apps_once < <(get_workspace_array "$ws" "apps_once")
+  for app in "${apps_once[@]:-}"; do
+    [[ -n "$app" ]] || continue
+    open_app_if_needed "$app"
+    sleep_for_workspace "$ws"
+  done
+
+  mapfile -t apps_always < <(get_workspace_array "$ws" "apps_always")
+  for app in "${apps_always[@]:-}"; do
+    [[ -n "$app" ]] || continue
+    open_app_always "$app"
+    sleep_for_workspace "$ws"
+  done
+
+  launch_wezterm_workspace "$ws"
+  sleep_for_workspace "$ws"
+
+  mapfile -t commands_once < <(get_workspace_array "$ws" "commands_once")
+  for cmd in "${commands_once[@]:-}"; do
+    [[ -n "$cmd" ]] || continue
+    run_command "$cmd"
+    sleep_for_workspace "$ws"
+  done
+
+  mapfile -t commands_always < <(get_workspace_array "$ws" "commands_always")
+  for cmd in "${commands_always[@]:-}"; do
+    [[ -n "$cmd" ]] || continue
+    run_command "$cmd"
+    sleep_for_workspace "$ws"
+  done
+
+  log "Workspace opened: $ws"
+}
+
+restart_workspace() {
+  local ws="$1"
+  log "Restarting workspace: $ws"
+  close_workspace "$ws"
+  sleep 1
+  open_workspace "$ws"
+}
+
+ACTION="${1:-}"
+
+if [[ -z "$ACTION" ]]; then
+  usage
+  exit 1
+fi
+
+case "$ACTION" in
+  list)
+    echo "Configured workspaces:"
+    list_workspaces
+    ;;
+  open)
+    shift
+    WS="${1:-}"
+    [[ -n "$WS" ]] || {
+      echo "Error: Missing workspace name." >&2
+      usage
+      exit 1
+    }
+    open_workspace "$WS"
+    ;;
+  close)
+    shift
+    WS="${1:-}"
+    [[ -n "$WS" ]] || {
+      echo "Error: Missing workspace name." >&2
+      usage
+      exit 1
+    }
+    close_workspace "$WS"
+    ;;
+  restart)
+    shift
+    WS="${1:-}"
+    [[ -n "$WS" ]] || {
+      echo "Error: Missing workspace name." >&2
+      usage
+      exit 1
+    }
+    restart_workspace "$WS"
+    ;;
+  -h|--help|help)
+    usage
+    ;;
+  *)
+    open_workspace "$ACTION"
+    ;;
+esac

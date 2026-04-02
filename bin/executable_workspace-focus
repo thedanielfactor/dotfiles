@@ -1,0 +1,419 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+CONFIG_FILE="$HOME/.config/workspace/config.json"
+
+usage() {
+  cat <<EOF
+Usage:
+  workspace-focus <workspace> <browser|terminal|obsidian|cursor|slack|tab> [tab-name]
+
+Examples:
+  workspace-focus work browser
+  workspace-focus work terminal
+  workspace-focus work obsidian
+  workspace-focus olddog tab "Astro Dev"
+EOF
+}
+
+[[ -f "$CONFIG_FILE" ]] || {
+  echo "Error: Required file not found: $CONFIG_FILE" >&2
+  exit 1
+}
+
+WORKSPACE_NAME="${1:-}"
+TARGET="${2:-}"
+TAB_NAME="${3:-}"
+
+[[ -n "$WORKSPACE_NAME" && -n "$TARGET" ]] || {
+  usage
+  exit 1
+}
+
+get_workspace_value() {
+  local ws="$1"
+  local key="$2"
+  jq -r --arg ws "$ws" --arg key "$key" '.workspaces[$ws][$key] // empty' "$CONFIG_FILE"
+}
+
+workspace_exists() {
+  local ws="$1"
+  jq -e --arg ws "$ws" '.workspaces[$ws]' "$CONFIG_FILE" >/dev/null 2>&1
+}
+
+activate_app() {
+  local app_name="$1"
+  osascript -e "tell application \"$app_name\" to activate" >/dev/null 2>&1 || true
+}
+
+find_wezterm_bin() {
+  if command -v wezterm >/dev/null 2>&1; then
+    command -v wezterm
+  elif [[ -x "/opt/homebrew/bin/wezterm" ]]; then
+    echo "/opt/homebrew/bin/wezterm"
+  elif [[ -x "/Applications/WezTerm.app/Contents/MacOS/wezterm" ]]; then
+    echo "/Applications/WezTerm.app/Contents/MacOS/wezterm"
+  else
+    echo ""
+  fi
+}
+
+if ! workspace_exists "$WORKSPACE_NAME"; then
+  echo "Error: Workspace '$WORKSPACE_NAME' not found." >&2
+  jq -r '.workspaces | keys[]' "$CONFIG_FILE" >&2
+  exit 1
+fi
+
+# Reuse existing config key for now.
+WEZTERM_WORKSPACE="$(get_workspace_value "$WORKSPACE_NAME" "terminal_title")"
+OBSIDIAN_URI="$(get_workspace_value "$WORKSPACE_NAME" "obsidian_uri")"
+WEZTERM_BIN="$(find_wezterm_bin)"
+
+# Find a WezTerm instance socket that has the given workspace by checking all available sockets
+find_wezterm_socket_for_workspace() {
+  local target_workspace="$1"
+  [[ -n "$target_workspace" ]] || return 1
+
+  local socket_dir="${WEZTERM_SOCK_DIR:-$HOME/.local/share/wezterm}"
+  
+  # Check default socket first (current instance)
+  local default_result
+  default_result=$(WEZTERM_UNIX_SOCKET="" "$WEZTERM_BIN" cli list --format json 2>/dev/null | jq -r --arg ws "$target_workspace" '[.[] | select(.workspace == $ws)] | length')
+  if [[ "$default_result" -gt 0 ]]; then
+    echo "default"
+    return 0
+  fi
+
+  # Check all other sockets in the directory
+  for sock in "$socket_dir"/gui-sock-*; do
+    [[ -S "$sock" ]] || continue
+    
+    local result
+    result=$(WEZTERM_UNIX_SOCKET="$sock" "$WEZTERM_BIN" cli list --format json 2>/dev/null | jq -r --arg ws "$target_workspace" '[.[] | select(.workspace == $ws)] | length')
+    
+    if [[ "$result" -gt 0 ]]; then
+      echo "$sock"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+activate_wezterm_by_socket() {
+  local socket_path="$1"
+  local tab_idx="${2:-}"
+  [[ -n "$socket_path" ]] || return 1
+
+  # Activate the WezTerm app (brings the most recent window to front)
+  osascript -e 'tell application "WezTerm" to activate' 2>/dev/null || true
+  
+  # If tab index specified, activate that tab via CLI using the specific socket
+  if [[ -n "$tab_idx" && "$socket_path" != "default" ]]; then
+    sleep 0.2
+    # Get all panes and activate the one at the tab index
+    local target_pane
+    target_pane=$(WEZTERM_UNIX_SOCKET="$socket_path" "$WEZTERM_BIN" cli list --format json 2>/dev/null | jq -r --argjson idx "$tab_idx" 'unique_by(.tab_id) | sort_by(.tab_id) | .[$idx] | .pane_id // empty')
+    if [[ -n "$target_pane" ]]; then
+      WEZTERM_UNIX_SOCKET="$socket_path" "$WEZTERM_BIN" cli activate-pane --pane-id "$target_pane" 2>/dev/null || true
+    fi
+  elif [[ -n "$tab_idx" ]]; then
+    # Use default socket
+    sleep 0.2
+    local target_pane
+    target_pane=$("$WEZTERM_BIN" cli list --format json 2>/dev/null | jq -r --argjson idx "$tab_idx" 'unique_by(.tab_id) | sort_by(.tab_id) | .[$idx] | .pane_id // empty')
+    if [[ -n "$target_pane" ]]; then
+      "$WEZTERM_BIN" cli activate-pane --pane-id "$target_pane" 2>/dev/null || true
+    fi
+  fi
+}
+
+switch_wezterm_tab() {
+  local tab_idx="$1"
+  [[ -n "$tab_idx" ]] || return 1
+
+  # Convert 0-based index to 1-based for Cmd+Number
+  local tab_num=$((tab_idx + 1))
+
+  osascript <<EOF 2>/dev/null
+tell application "WezTerm" to activate
+delay 0.2
+tell application "System Events"
+  keystroke "$tab_num" using command down
+end tell
+EOF
+}
+
+wezterm_workspace_json() {
+  [[ -n "$WEZTERM_BIN" ]] || return 1
+
+  # Get the workspace directory from config - this is the reliable identifier
+  local workspace_dir
+  workspace_dir="$(get_workspace_value "$WORKSPACE_NAME" "workspace_dir")"
+  [[ -n "$workspace_dir" ]] || return 1
+
+  # Normalize: remove trailing slash for consistent comparison
+  workspace_dir="${workspace_dir%/}"
+
+  local raw
+  raw="$("$WEZTERM_BIN" cli list --format json 2>/dev/null)"
+
+  if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+    echo "[workspace-focus] WORKSPACE_DIR_LOOKUP=$workspace_dir" >&2
+    echo "[workspace-focus] raw_count=$(echo "$raw" | jq 'length')" >&2
+  fi
+
+  # Match by cwd (current working directory) - most reliable since each workspace
+  # has a unique workspace_dir and all tabs are spawned there
+  local by_cwd
+  by_cwd="$(printf '%s' "$raw" | jq -c --arg dir "$workspace_dir" '[.[] | select(.cwd | startswith("file://" + $dir))]')"
+
+  if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+    echo "[workspace-focus] matched by cwd: $(echo "$by_cwd" | jq 'length') panes" >&2
+  fi
+
+  printf '%s' "$by_cwd"
+}
+
+wezterm_workspace_exists() {
+  local json
+  json="$(wezterm_workspace_json 2>/dev/null || true)"
+  [[ -n "$json" ]] && [[ "$json" != "[]" ]]
+}
+
+# Check if workspace is running by activating WezTerm and checking if the workspace appears
+# This works because activating WezTerm brings the most recent instance to front, and
+# wezterm cli list will show windows from that instance
+wezterm_workspace_running() {
+  # First check current instance without activating
+  if wezterm_workspace_exists; then
+    return 0
+  fi
+
+  # Try activating WezTerm and check again (might be a different instance)
+  activate_app "WezTerm"
+  sleep 0.5
+
+  if wezterm_workspace_exists; then
+    return 0
+  fi
+
+  return 1
+}
+
+# Map a display name (e.g. "OpenCode") to its 0-based index in the workspace's
+# terminal_tabs config array, mirroring the parse_tab() logic in .wezterm.lua.
+get_tab_config_index() {
+  local ws="$1" tab_name="$2"
+  jq -r --arg ws "$ws" --arg name "$tab_name" '
+    .workspaces[$ws].terminal_tabs // [] |
+    to_entries[] |
+    (.value |
+      if   . == "opencode" then "OpenCode"
+      elif . == "terminal"  then "Terminal"
+      elif test("::")       then split("::")[0]
+      else .
+      end
+    ) as $resolved |
+    select($resolved == $name) |
+    .key
+  ' "$CONFIG_FILE" | head -1
+}
+
+focus_wezterm_tab() {
+  local desired_title="$1"
+  [[ -n "$desired_title" ]] || return 1
+
+  if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+    echo "[workspace-focus] START focus_wezterm_tab desired='$desired_title'" >&2
+  fi
+
+  # First, try to get workspace from current instance
+  local json
+  if wezterm_workspace_exists; then
+    json="$(wezterm_workspace_json)"
+  else
+    # If not in current instance, try to find and activate the window in a separate instance
+    local window_id
+    window_id="$(find_wezterm_window_by_title "$WEZTERM_WORKSPACE")"
+    
+    if [[ -z "$window_id" ]]; then
+      if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+        echo "[workspace-focus] FAIL: workspace does not exist in any instance" >&2
+      fi
+      return 1
+    fi
+    
+    if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+      echo "[workspace-focus] Found workspace in separate instance, window_id=$window_id" >&2
+    fi
+    
+    # Activate the window and try to get the workspace json again
+    osascript -e "tell application \"WezTerm\" to activate" >/dev/null 2>&1 || true
+    sleep 0.5
+    
+    json="$("$WEZTERM_BIN" cli list --format json 2>/dev/null | jq -c --arg dir "$(get_workspace_value "$WORKSPACE_NAME" "workspace_dir")" '[.[] | select(.cwd | startswith("file://" + $dir))]')"
+    
+    if [[ -z "$json" || "$json" == "[]" ]]; then
+      if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+        echo "[workspace-focus] FAIL: could not get workspace json after activation" >&2
+      fi
+      return 1
+    fi
+  fi
+
+  if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+    echo "[workspace-focus] got json for workspace" >&2
+    echo "[workspace-focus] json_preview=$(printf '%s' "$json" | jq -c '.[0:2]')" >&2
+  fi
+
+  # Find target pane by config position (most reliable: creation order = config order).
+  local tab_index target_pane_id
+  tab_index="$(get_tab_config_index "$WORKSPACE_NAME" "$desired_title")"
+  if [[ -n "$tab_index" ]]; then
+    target_pane_id="$(printf '%s' "$json" | jq -r --argjson i "$tab_index" '
+      unique_by(.tab_id) | sort_by(.tab_id) | .[$i] | .pane_id // empty
+    ')"
+  fi
+
+  # Fallback: search by tab_title or process title.
+  if [[ -z "$target_pane_id" ]]; then
+    target_pane_id="$(printf '%s' "$json" | jq -r --arg t "$desired_title" '
+      (map(select((.tab_title // "") == $t)) + map(select((.title // "") == $t)))
+      | unique_by(.tab_id) | first | .pane_id // empty
+    ')"
+  fi
+
+  if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+    echo "[workspace-focus] tab_index=${tab_index:-<none>} target_pane_id=${target_pane_id:-<not found>}" >&2
+  fi
+
+  [[ -n "$target_pane_id" ]] || {
+    if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+      echo "[workspace-focus] FAIL: no target_pane_id found" >&2
+    fi
+    return 1
+  }
+
+  # activate-pane targets a specific pane by global ID — this switches workspace,
+  # window, tab, and pane focus in one shot without cross-workspace ambiguity.
+  if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+    echo "[workspace-focus] executing: wezterm cli activate-pane --pane-id $target_pane_id" >&2
+    "$WEZTERM_BIN" cli activate-pane --pane-id "$target_pane_id"
+    local exit_code=$?
+    echo "[workspace-focus] exit_code=$exit_code" >&2
+  else
+    "$WEZTERM_BIN" cli activate-pane --pane-id "$target_pane_id" >/dev/null 2>&1
+  fi
+}
+
+focus_wezterm_any_tab() {
+  wezterm_workspace_exists || return 1
+
+  local tab_id
+  tab_id="$(
+    wezterm_workspace_json \
+      | jq -r '
+          first
+          | .tab_id // empty
+        '
+  )"
+
+  [[ -n "$tab_id" ]] || return 1
+
+  "$WEZTERM_BIN" cli activate-tab --tab-id "$tab_id" >/dev/null 2>&1
+}
+
+launch_workspace_if_needed() {
+  # Determine which tab to focus (0-based index)
+  local focus_tab_idx=""
+  if [[ -n "${TAB_NAME:-}" ]]; then
+    focus_tab_idx="$(get_tab_config_index "$WORKSPACE_NAME" "$TAB_NAME")"
+  fi
+
+  # Check if workspace exists in any WezTerm instance (across all sockets)
+  local found_socket
+  found_socket=$(find_wezterm_socket_for_workspace "$WEZTERM_WORKSPACE")
+
+  if [[ -n "$found_socket" ]]; then
+    if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+      echo "[workspace-focus] Found workspace in WezTerm instance: $found_socket" >&2
+    fi
+    activate_wezterm_by_socket "$found_socket" "$focus_tab_idx"
+    return 0
+  fi
+
+  if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+    echo "[workspace-focus] WezTerm workspace not running, launching..." >&2
+  fi
+
+  # Export for WezTerm's gui-startup handler
+  export WEZTERM_FOCUS_TAB="${focus_tab_idx:-}"
+
+  # Use the workspace script to launch the workspace
+  if [[ -x "$HOME/bin/workspace" ]]; then
+    "$HOME/bin/workspace" open "$WORKSPACE_NAME"
+  elif command -v workspace >/dev/null 2>&1; then
+    workspace open "$WORKSPACE_NAME"
+  else
+    return 1
+  fi
+
+  # Give WezTerm time to start up and create the window
+  sleep 2
+
+  # Wait for the workspace to be created
+  local attempts=0
+  while [[ $attempts -lt 30 ]]; do
+    found_socket=$(find_wezterm_socket_for_workspace "$WEZTERM_WORKSPACE")
+    if [[ -n "$found_socket" ]]; then
+      if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" ]]; then
+        echo "[workspace-focus] Workspace is now running on socket: $found_socket" >&2
+      fi
+      return 0
+    fi
+
+    if [[ "${WORKSPACE_FOCUS_DEBUG:-}" == "1" && $((attempts % 5)) -eq 0 ]]; then
+      local raw
+      raw="$("$WEZTERM_BIN" cli list --format json 2>/dev/null)"
+      echo "[workspace-focus] waiting... raw_count=$(echo "$raw" | jq 'length')" >&2
+    fi
+
+    sleep 0.5
+    attempts=$((attempts + 1))
+  done
+
+  return 1
+}
+
+case "$TARGET" in
+  browser)
+    activate_app "Google Chrome"
+    ;;
+  obsidian)
+    [[ -n "$OBSIDIAN_URI" ]] && open "$OBSIDIAN_URI" >/dev/null 2>&1 || true
+    activate_app "Obsidian"
+    ;;
+  cursor)
+    activate_app "Cursor"
+    ;;
+  slack)
+    activate_app "Slack"
+    ;;
+  terminal)
+    TAB_NAME="Terminal" launch_workspace_if_needed
+    ;;
+  tab)
+    [[ -n "$TAB_NAME" ]] || {
+      echo "Error: tab target requires a tab name" >&2
+      exit 1
+    }
+    launch_workspace_if_needed
+    ;;
+  *)
+    echo "Error: Unknown target '$TARGET'" >&2
+    usage
+    exit 1
+    ;;
+esac

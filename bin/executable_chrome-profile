@@ -1,0 +1,438 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+CHROME_APP="Google Chrome"
+CHROME_DIR="$HOME/Library/Application Support/Google/Chrome"
+LOCAL_STATE="$CHROME_DIR/Local State"
+CONFIG_FILE="$HOME/.config/chrome-profile/workspaces.json"
+
+usage() {
+  cat <<EOF
+Usage:
+  chrome-profile list
+  chrome-profile list-workspaces
+  chrome-profile profile "<profile name>" [url1] [url2] ...
+  chrome-profile workspace <workspace-name>
+
+Examples:
+  chrome-profile list
+  chrome-profile list-workspaces
+  chrome-profile profile "Work"
+  chrome-profile profile "Old Dog New Flex" https://olddognewflex.com
+  chrome-profile workspace work
+EOF
+}
+
+require_cmd() {
+  command -v "$1" >/dev/null 2>&1 || {
+    echo "Error: '$1' is required but not installed." >&2
+    exit 1
+  }
+}
+
+require_file() {
+  local file="$1"
+  [[ -f "$file" ]] || {
+    echo "Error: Required file not found:" >&2
+    echo "  $file" >&2
+    exit 1
+  }
+}
+
+require_cmd jq
+require_cmd open
+require_cmd ps
+require_file "$LOCAL_STATE"
+
+ACTION="${1:-}"
+[[ -n "$ACTION" ]] || { usage; exit 1; }
+
+list_profiles() {
+  jq -r '
+    .profile.info_cache
+    | to_entries[]
+    | select((.value | type) == "object")
+    | "\(.value.name // .key)\t=>\t\(.key)"
+  ' "$LOCAL_STATE" | sort
+}
+get_profile_dir_by_name() {
+  local profile_name="$1"
+
+  jq -r --arg name "$profile_name" '
+    .profile.info_cache
+    | to_entries[]
+    | select((.value | type) == "object")
+    | select((.value.name // "") == $name)
+    | .key
+  ' "$LOCAL_STATE" | head -n 1
+}
+
+# State directory for tracking profile windows
+PROFILE_STATE_DIR="${HOME}/.config/chrome-profile/state"
+mkdir -p "$PROFILE_STATE_DIR"
+
+profile_is_running() {
+  local profile_dir="$1"
+  local state_file="$PROFILE_STATE_DIR/${profile_dir// /_}.window"
+
+  # Check if Chrome is running at all
+  if ! pgrep -i "chrome" > /dev/null 2>&1; then
+    rm -f "$state_file" 2>/dev/null
+    return 1
+  fi
+
+  # Check if we have a tracked window for this profile
+  if [[ -f "$state_file" ]]; then
+    local window_id
+    window_id=$(cat "$state_file" 2>/dev/null)
+    if [[ -n "$window_id" ]]; then
+      # Check if this window still exists
+      local window_exists
+      window_exists=$(osascript <<APPLESCRIPT 2>/dev/null
+        tell application "Google Chrome"
+          try
+            set w to window id $window_id
+            return "true"
+          on error
+            return "false"
+          end try
+        end tell
+APPLESCRIPT
+)
+      if [[ "$window_exists" == "true" ]]; then
+        return 0
+      else
+        rm -f "$state_file"
+      fi
+    fi
+  fi
+
+  # No tracked window - profile is not running (or we don't know about it)
+  return 1
+}
+
+get_profile_window_id() {
+  local profile_dir="$1"
+  local state_file="$PROFILE_STATE_DIR/${profile_dir// /_}.window"
+  if [[ -f "$state_file" ]]; then
+    cat "$state_file" 2>/dev/null
+  fi
+}
+
+set_profile_window_id() {
+  local profile_dir="$1"
+  local window_id="$2"
+  local state_file="$PROFILE_STATE_DIR/${profile_dir// /_}.window"
+  echo "$window_id" > "$state_file"
+}
+
+activate_profile_window() {
+  local profile_dir="$1"
+  local window_id
+  window_id=$(get_profile_window_id "$profile_dir")
+
+  if [[ -n "$window_id" ]]; then
+    # Activate the specific window
+    osascript <<APPLESCRIPT 2>/dev/null
+      tell application "Google Chrome"
+        try
+          set index of window id $window_id to 1
+          activate
+        on error
+          -- Window no longer exists, will need to relaunch
+        end try
+      end tell
+APPLESCRIPT
+  fi
+}
+
+open_urls_in_window() {
+  local window_id="$1"
+  shift
+  local urls=("$@")
+
+  for url in "${urls[@]}"; do
+    osascript <<APPLESCRIPT 2>/dev/null
+      tell application "Google Chrome"
+        tell window id $window_id
+          set newTab to make new tab with properties {URL:"$url"}
+        end tell
+      end tell
+APPLESCRIPT
+  done
+}
+
+get_window_tabs() {
+  local window_id="$1"
+  osascript <<APPLESCRIPT 2>/dev/null
+    tell application "Google Chrome"
+      set tabUrls to {}
+      tell window id $window_id
+        repeat with t in tabs
+          set end of tabUrls to (URL of t as string)
+        end repeat
+      end tell
+      set AppleScript's text item delimiters to "\n"
+      tabUrls as string
+    end tell
+APPLESCRIPT
+}
+
+get_front_window_id() {
+  osascript <<'APPLESCRIPT' 2>/dev/null
+    tell application "Google Chrome"
+      if (count windows) > 0 then
+        return id of front window
+      end if
+    end tell
+APPLESCRIPT
+}
+
+launch_profile() {
+  local profile_dir="$1"
+  shift
+  local urls=("$@")
+
+  if [[ ${#urls[@]} -eq 0 ]]; then
+    # Just open the profile without URLs
+    open -na "$CHROME_APP" --args --profile-directory="$profile_dir"
+  else
+    # Launch profile with URLs
+    open -na "$CHROME_APP" --args --profile-directory="$profile_dir" "${urls[@]}"
+  fi
+}
+
+
+
+get_domain() {
+  local url="$1"
+  # Extract just the domain, removing www/app subdomains
+  # https://www.example.com/path -> example.com
+  # https://app.gumroad.com/ -> gumroad.com
+  echo "$url" | sed -E 's|^https?://||; s|^www\.||; s|^app\.||; s|/.*||; s|:[0-9]+$||; y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'
+}
+
+url_already_open() {
+  local url="$1"
+  local open_tabs="$2"
+
+  [[ -z "$open_tabs" ]] && return 1
+
+  local domain
+  domain="$(get_domain "$url")"
+  [[ -z "$domain" ]] && return 1
+
+  local tab
+  while IFS= read -r tab; do
+    [[ -z "$tab" ]] && continue
+    local tab_domain
+    tab_domain="$(get_domain "$tab")"
+    [[ -z "$tab_domain" ]] && continue
+
+    # Check if domains match
+    if [[ "$domain" == "$tab_domain" ]]; then
+      return 0
+    fi
+  done <<< "$open_tabs"
+
+  return 1
+}
+
+list_workspaces() {
+  require_file "$CONFIG_FILE"
+
+  jq -r '
+    .workspaces
+    | to_entries[]
+    | "\(.key)\t=>\tprofile: \(.value.profile) (\(.value.urls | length) urls)"
+  ' "$CONFIG_FILE" | sort
+}
+
+get_workspace_profile() {
+  local workspace="$1"
+
+  jq -r --arg ws "$workspace" '
+    .workspaces[$ws].profile // empty
+  ' "$CONFIG_FILE"
+}
+
+get_workspace_urls() {
+  local workspace="$1"
+
+  jq -r --arg ws "$workspace" '
+    .workspaces[$ws].urls[]? // empty
+  ' "$CONFIG_FILE"
+}
+
+run_profile() {
+  local profile_name="$1"
+  shift || true
+  local urls=("$@")
+
+  local profile_dir
+  profile_dir="$(get_profile_dir_by_name "$profile_name")"
+
+  if [[ -z "$profile_dir" ]]; then
+    echo "Error: No Chrome profile found with name:" >&2
+    echo "  $profile_name" >&2
+    echo >&2
+    echo "Available profiles:" >&2
+    list_profiles >&2
+    exit 1
+  fi
+
+  if profile_is_running "$profile_dir"; then
+    echo "Profile '$profile_name' ($profile_dir) is already running."
+
+    # Get the tracked window ID for this profile
+    local window_id
+    window_id=$(get_profile_window_id "$profile_dir")
+
+    if [[ -n "$window_id" ]]; then
+      # Activate the specific window for this profile
+      activate_profile_window "$profile_dir"
+
+      if [[ ${#urls[@]} -gt 0 ]]; then
+        # Get tabs from this specific window
+        local open_tabs
+        open_tabs=$(get_window_tabs "$window_id")
+
+        local urls_to_open=()
+        local skipped=()
+
+        for url in "${urls[@]}"; do
+          if url_already_open "$url" "$open_tabs"; then
+            skipped+=("$url")
+          else
+            urls_to_open+=("$url")
+          fi
+        done
+
+        if [[ ${#skipped[@]} -gt 0 ]]; then
+          echo "Skipping already open URLs (${#skipped[@]}):"
+          for url in "${skipped[@]}"; do
+            echo "  - $url"
+          done
+        fi
+
+        if [[ ${#urls_to_open[@]} -gt 0 ]]; then
+          echo "Opening new URLs (${#urls_to_open[@]}):"
+          for url in "${urls_to_open[@]}"; do
+            echo "  - $url"
+          done
+          open_urls_in_window "$window_id" "${urls_to_open[@]}"
+        else
+          echo "All requested URLs are already open."
+        fi
+      fi
+    else
+      # Window ID not tracked but profile detected - fall back to basic behavior
+      if [[ ${#urls[@]} -gt 0 ]]; then
+        echo "Opening URLs (${#urls[@]}):"
+        for url in "${urls[@]}"; do
+          echo "  - $url"
+        done
+        # Use launch_profile which will create a new window
+        launch_profile "$profile_dir" "${urls[@]}"
+      fi
+    fi
+  else
+    echo "Launching profile '$profile_name' ($profile_dir)..."
+    
+    # Get window count before launch
+    local window_count_before
+    window_count_before=$(osascript <<'APPLESCRIPT' 2>/dev/null
+      tell application "Google Chrome"
+        count windows
+      end tell
+APPLESCRIPT
+)
+    [[ -z "$window_count_before" ]] && window_count_before=0
+
+    # Launch the profile
+    launch_profile "$profile_dir" "${urls[@]}"
+
+    # Wait a moment for the window to appear
+    sleep 1
+
+    # Get the new window ID and track it
+    local window_count_after
+    window_count_after=$(osascript <<'APPLESCRIPT' 2>/dev/null
+      tell application "Google Chrome"
+        count windows
+      end tell
+APPLESCRIPT
+)
+
+    # Find the new window (should be the frontmost one if count increased)
+    if [[ -n "$window_count_after" && "$window_count_after" -gt "$window_count_before" ]]; then
+      local new_window_id
+      new_window_id=$(osascript <<'APPLESCRIPT' 2>/dev/null
+        tell application "Google Chrome"
+          return id of front window
+        end tell
+APPLESCRIPT
+)
+      if [[ -n "$new_window_id" ]]; then
+        set_profile_window_id "$profile_dir" "$new_window_id"
+      fi
+    fi
+  fi
+}
+
+case "$ACTION" in
+  list)
+    echo "Chrome profiles:"
+    list_profiles
+    ;;
+  list-workspaces)
+    echo "Configured Chrome workspaces:"
+    list_workspaces
+    ;;
+  profile)
+    shift
+    PROFILE_NAME="${1:-}"
+    [[ -n "$PROFILE_NAME" ]] || {
+      echo "Error: Missing profile name." >&2
+      usage
+      exit 1
+    }
+    shift || true
+    run_profile "$PROFILE_NAME" "$@"
+    ;;
+  workspace)
+    require_file "$CONFIG_FILE"
+    shift
+    WORKSPACE_NAME="${1:-}"
+    [[ -n "$WORKSPACE_NAME" ]] || {
+      echo "Error: Missing workspace name." >&2
+      usage
+      exit 1
+    }
+
+    PROFILE_NAME="$(get_workspace_profile "$WORKSPACE_NAME")"
+
+    if [[ -z "$PROFILE_NAME" ]]; then
+      echo "Error: Chrome workspace not found:" >&2
+      echo "  $WORKSPACE_NAME" >&2
+      echo >&2
+      echo "Available Chrome workspaces:" >&2
+      list_workspaces >&2
+      exit 1
+    fi
+
+    mapfile -t URLS < <(get_workspace_urls "$WORKSPACE_NAME")
+    run_profile "$PROFILE_NAME" "${URLS[@]}"
+    ;;
+  -h|--help|help)
+    usage
+    ;;
+  *)
+    echo "Error: Unknown command '$ACTION'" >&2
+    echo >&2
+    usage
+    exit 1
+    ;;
+esac
+
