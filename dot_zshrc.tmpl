@@ -153,13 +153,6 @@ alias del="trash"
 # broot
 source $HOME/.config/broot/launcher/bash/br
 
-# alacirtty
-if [[ $TERM -eq "alacritty" ]]; then
-    precmd() {
-      print -Pn "\e]0/%n@%m: %~\a"
-    }
-fi
-
 # pnpm
 export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
@@ -243,6 +236,8 @@ if [ -f '$HOME/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '$HOME/Downloa
 if [ -f '$HOME/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '$HOME/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 
 eval "$(mise activate zsh --shims)"
+
+export OPENCODE_CONFIG_DIR="$HOME/.config/opencode"
 
 # eval "$(mise activate zsh)"
 export PATH="$HOME/.local/share/mise/shims:$PATH"
