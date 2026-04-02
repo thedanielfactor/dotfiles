@@ -1,4 +1,4 @@
--- if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
+if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
 
 -- AstroLSP allows you to customize the features in AstroNvim's LSP configuration engine
 -- Configuration documentation can be found with `:h astrolsp`
@@ -41,57 +41,18 @@ return {
     servers = {
       -- "pyright"
     },
-    -- customize language server configuration options passed to `lspconfig`
-    ---@diagnostic disable: missing-fields
+    -- customize language server configuration passed to `vim.lsp.config`
+    -- client specific configuration can also go in `lsp/` in your configuration root (see `:h lsp-config`)
     config = {
-      -- clangd = { capabilities = { offsetEncoding = "utf-8" } },
-      lua = {
-        -- customize the lua language server configuration
-        settings = {
-          Lua = {
-            diagnostics = {
-              globals = { "vim" }, -- add vim as a global to lua_ls
-            },
-            workspace = {
-              library = vim.api.nvim_get_runtime_file("", true), -- make the server aware of Neovim runtime files
-              maxPreload = 1000,
-              preloadFileSize = 1000,
-            },
-            telemetry = { enable = false }, -- disable telemetry for lua_ls
-          },
-        },
-      },
+      -- ["*"] = { capabilities = {} }, -- modify default LSP client settings such as capabilities
     },
     -- customize how language servers are attached
     handlers = {
-      -- a function without a key is simply the default handler, functions take two parameters, the server name and the configured options table for that server
-      -- function(server, opts) require("lspconfig")[server].setup(opts) end
+      -- a function with the key `*` modifies the default handler, functions takes the server name as the parameter
+      -- ["*"] = function(server) vim.lsp.enable(server) end
 
-      -- the key is the server that is being setup with `lspconfig`
+      -- the key is the server that is being setup with `vim.lsp.config`
       -- rust_analyzer = false, -- setting a handler to false will disable the set up of that language server
-      -- pyright = function(_, opts) require("lspconfig").pyright.setup(opts) end -- or a custom handler function can be passed
-      denols = function(_, opts)
-        local util = require "lspconfig.util"
-        opts.root_dir = util.root_pattern("deno.json", "deno.jsonc")
-        require("lspconfig").denols.setup(opts)
-      end,
-      tsserver = function(_, opts)
-        local util = require "lspconfig.util"
-        opts.root_dir = function(fname)
-          local deno = util.root_pattern("deno.json", "deno.jsonc")(fname)
-          if deno then return nil end -- if it's a Deno project, don't attach tsserver
-          return util.root_pattern("package.json", "tsconfig.json", ".git")(fname)
-        end
-        require("lspconfig").tsserver.setup(opts)
-      end,
-      eslint = function(_, opts)
-        local lspconfig = require "lspconfig"
-        local util = require "lspconfig.util"
-        -- this will set the root directory of eslint to the nearest package.json file
-        opts.root_dir =
-          util.root_pattern("package.json", ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json", ".eslintrc")
-        lspconfig.eslint.setup(opts)
-      end,
     },
     -- Configure buffer local auto commands to add when attaching a language server
     autocmds = {
@@ -134,7 +95,7 @@ return {
       },
     },
     -- A custom `on_attach` function to be run after the default `on_attach` function
-    -- takes two parameters `client` and `bufnr`  (`:h lspconfig-setup`)
+    -- takes two parameters `client` and `bufnr`  (`:h lsp-attach`)
     on_attach = function(client, bufnr)
       -- this would disable semanticTokensProvider for all clients
       -- client.server_capabilities.semanticTokensProvider = nil
