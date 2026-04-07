@@ -23,5 +23,23 @@ if not pcall(require, "lazy") then
   vim.cmd.quit()
 end
 
+--: Basic keymaps
+local function set_wrap()
+	vim.opt.wrap = true
+	vim.opt.linebreak = true
+	vim.keymap.set('n', 'j', 'gj')
+	vim.keymap.set('n', 'k', 'gk')
+end
+
+local function set_nowrap()
+	vim.opt.wrap = false
+	vim.opt.linebreak = false
+	vim.keymap.set('n', 'j', 'j')
+	vim.keymap.set('n', 'k', 'k')
+end
+
+vim.keymap.set('n', '<leader>w', set_wrap, { desc = 'Toggle word wrap ON', noremap = true, silent = true })
+vim.keymap.set('n', '<leader>W', set_nowrap, { desc = 'Toggle word wrap OFF', noremap = true, silent = true })
+
 require "lazy_setup"
 require "polish"
