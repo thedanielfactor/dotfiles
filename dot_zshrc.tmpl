@@ -242,6 +242,25 @@ alias oc=opencode
 
 export OLLAMA_API_KEY="db2ad0a5f2544919ab643fb06c64a412.j3Ru4HjrrKHkfxxZY1gwtqVg"
 
+# Auto-doctor on entering a client context
+typeset -gA _ocd_seen
+chpwd_opencode_doctor() {
+  local dir="$PWD"
+  while [[ "$dir" != "/" && "$dir" != "$HOME" ]]; do
+    if [[ -d "$dir/.opencode-client" ]]; then
+      if [[ -z "${_ocd_seen[$dir]:-}" ]]; then
+        _ocd_seen[$dir]=1
+        opencode-doctor "$dir" 2>&1 | grep -E '✗|!|═══' | head -20
+      fi
+      return
+    fi
+    dir="$(dirname "$dir")"
+  done
+}
+
+typeset -ga chpwd_functions
+chpwd_functions+=(chpwd_opencode_doctor)
+
 alias qibuild='go build -o ~/.local/bin/qi ./cmd/qi'
 
 eval "$(direnv hook zsh)"
