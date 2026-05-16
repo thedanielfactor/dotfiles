@@ -267,6 +267,7 @@ chpwd_functions+=(chpwd_opencode_doctor)
 alias qibuild='go build -o ~/.local/bin/qi ./cmd/qi'
 
 eval "$(direnv hook zsh)"
+export PATH="$(go env GOPATH)/bin:$PATH"
 
 # eval "$(mise activate zsh)"
 export PATH="$HOME/.local/share/mise/shims:$PATH"
