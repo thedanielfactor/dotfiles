@@ -221,6 +221,7 @@ alias wttr="curl wttr.in"
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+export PATH="$HOME/.bun/bin:$PATH"
 
 export ZSH_COPILOT_AI_PROVIDER="openai"  # or "anthropic"
 source ~/.zsh-copilot/zsh-copilot.plugin.zsh
