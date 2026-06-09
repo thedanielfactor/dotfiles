@@ -46,7 +46,7 @@ local function truncate_with_ellipsis(text, max_width)
 		return string.sub(text, 1, max_width)
 	end
 
-	return string.sub(text, 1, max_width - 3) .. "..."
+	return string.sub(text, 1, max_width - 5) .. "..."
 end
 
 local function tab_title(tab_info)

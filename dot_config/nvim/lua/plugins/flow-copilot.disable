@@ -1,7 +1,0 @@
-return {
-  {
-    dir = "/Users/raymonddoran/Development/flow-copilot",
-    dev = true,
-    config = function() require("flow_copilot").setup() end,
-  },
-}

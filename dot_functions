@@ -51,6 +51,48 @@ iconsOff () {
     killall Finder
 }
 
+codeLight () {
+    source $HOME/.dotfiles/script/prompt
+
+    settings_json=$HOME/Library/Application\ Support/Code/User/settings.json
+    settings_dark=$HOME/Library/Application\ Support/Code/User/settings.dark.json
+    settings_light=$HOME/Library/Application\ Support/Code/User/settings.light.json
+    
+    if diff $settings_json $settings_dark > /dev/null 2>&1 
+    then
+        echo "VS Code Settings have NOT changed since last updated. Switching to codeLight settings.json..."
+        echo
+        cp $settings_light $settings_json && success "codeLight enabled"
+    else
+        echo "VS Code Settings have changed since last updated. Updating codeDark settings.json..."
+        echo
+        cp $settings_json $settings_dark && success "settings.dark.json updated"
+        echo
+        cp $settings_light $settings_json && success "codeLight enabled"
+    fi
+}
+
+codeDark () {
+    source $HOME/.dotfiles/script/prompt
+
+    settings_json=$HOME/Library/Application\ Support/Code/User/settings.json
+    settings_dark=$HOME/Library/Application\ Support/Code/User/settings.dark.json
+    settings_light=$HOME/Library/Application\ Support/Code/User/settings.light.json
+    
+    if diff $settings_json $settings_light > /dev/null 2>&1 
+    then
+        echo "VS Code Settings have NOT changed since last updated. Switching to codeLight settings.json..."
+        echo
+        cp $settings_dark $settings_json && success "codeDark enabled"
+    else
+        echo "VS Code Settings have changed since last updated. Updating codeLight settings.json..."
+        echo
+        cp $settings_json $settings_light && success "settings.light.json updated"
+        echo
+        cp $settings_dark $settings_json && success "codeDark enabled"
+    fi
+}
+
 function giphy() { 
     curl --silent "https://api.giphy.com/v1/gifs/search?api_key=Co5g2PO3ezzv3UCpUkLl1yKAARtAGBMe&limit=1&offset=0&rating=&lang=en&q=$1" | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin')).data[0].images.downsized_large.url" | pbcopy | open -a Slack
 }
@@ -61,23 +103,6 @@ function zshaddhistory() {
 
 function batdiff() {
     git diff --name-only --diff-filter=d | xargs bat --diff
-}
-
-# Encrypt File
-function encFile() {
-  if (( $# < 1 )); then
-    echo "Usage: $funcstack[1] <filename> [output filename]"
-    return 1
-  fi
-
-  local inFile=$1 outFile=$1.enc
-
-  if (( $# > 1 )); then
-    outFile=$2
-  fi
-
-  openssl aes-256-cbc -a -salt -pbkdf2 -in $inFile -out $outFile 
-  trash $inFile
 }
 
 #---- End of Functions ----
