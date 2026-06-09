@@ -1,0 +1,13 @@
+export WORK_CONTEXT="olddognewflex"
+
+export GH_CONFIG_DIR="$HOME/.config/gh/odnf"
+export CLOUDSDK_CONFIG="$HOME/.config/gcloud/odnf"
+export OPENCODE_CONFIG="$HOME/Development/odnf/.opencode/opencode.json"
+export OPENCODE_CONFIG_DIR="$HOME/Development/odnf/.opencode"
+ln -sf "$HOME/.config/opencode-auth/odnf.json" "$HOME/.local/share/opencode/auth.json"
+
+export GIT_AUTHOR_NAME="Raymond Doran"
+export GIT_AUTHOR_EMAIL="raymond@olddognewflex.com"
+export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
+export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+export GIT_SSH_COMMAND="ssh -F $HOME/.ssh/config"
