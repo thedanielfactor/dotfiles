@@ -105,4 +105,37 @@ function batdiff() {
     git diff --name-only --diff-filter=d | xargs bat --diff
 }
 
+# ---- chezmoi helpers ----
+# Quick drift + diff preview. Read-only, never changes anything.
+function chzcheck() {
+    echo "→ Drift (live vs source):"
+    chezmoi status
+    echo
+    echo "→ What 'chezmoi apply' would change:"
+    chezmoi diff
+    echo
+    echo "Legend: first column set (M/A/D) = you edited the LIVE file."
+    echo "  Keep it: 'chezmoi re-add <file>' or 'chezmoi edit --apply <file>'."
+}
+
+# Safe apply: warns if live edits would be clobbered, shows diff, confirms.
+function chzapply() {
+    local drift
+    drift=$(chezmoi status)
+    if print -r -- "$drift" | grep -qE '^[MAD]'; then
+        echo "⚠  Live edits not yet in source — apply may OVERWRITE them:"
+        print -r -- "$drift" | grep -E '^[MAD]'
+        echo "   Run 'chezmoi re-add <file>' first to keep them."
+        echo
+        read -q "REPLY?Apply anyway? [y/N] " || { echo "\naborted"; return 1; }
+        echo
+    fi
+    chezmoi diff
+    [[ -n "$(chezmoi diff)" ]] || { echo "Nothing to apply — live matches source."; return 0; }
+    read -q "REPLY?Apply these changes to live files? [y/N] " || { echo "\naborted"; return 1; }
+    echo
+    chezmoi apply -v
+}
+# ---- end chezmoi helpers ----
+
 #---- End of Functions ----
